@@ -63,3 +63,4 @@ typings/
 dist
 
 .cache
+.rts*

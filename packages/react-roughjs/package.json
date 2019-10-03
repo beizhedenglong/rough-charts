@@ -1,7 +1,14 @@
 {
   "name": "react-roughjs",
   "version": "0.0.1",
-  "main": "index.js",
+  "source": "src/index.tsx",
+  "main": "dist/index.js",
+  "module": "dist/index.m.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "microbundle build --compress false --jsx react"
+  },
   "repository": "https://github.com/beizhedenglong/react-roughjs.git",
   "author": "Victor Wang <wang_shaojie@icloud.com>",
   "license": "MIT",
@@ -10,6 +17,7 @@
     "@types/react-dom": "^16.9.1",
     "eslint": "^6.5.1",
     "eslint-plugin-zero": "^0.0.9",
+    "microbundle": "^0.11.0",
     "parcel-bundler": "^1.12.3",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
