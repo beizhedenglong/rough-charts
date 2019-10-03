@@ -1,0 +1,6 @@
+{
+  "extends": "plugin:zero/ts-react",
+  "rules": {
+    "react/prop-types": "off"
+  }
+}
