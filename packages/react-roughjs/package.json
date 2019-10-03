@@ -7,7 +7,7 @@
   "unpkg": "dist/index.umd.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "microbundle build --compress false --jsx react"
+    "build": "microbundle build --no-compress --jsx react"
   },
   "repository": "https://github.com/beizhedenglong/react-roughjs.git",
   "author": "Victor Wang <wang_shaojie@icloud.com>",
@@ -23,5 +23,10 @@
     "react-dom": "^16.10.1",
     "roughjs": "^3.1.0",
     "typescript": "^3.6.3"
+  },
+  "peerDependencies": {
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
+    "roughjs": "^3.1.0"
   }
 }

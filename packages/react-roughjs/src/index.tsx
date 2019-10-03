@@ -8,7 +8,7 @@ interface ContextProps {
   rough: RoughSVG,
   root: SVGSVGElement | null
 }
-type a = Parameters<RoughSVG['line']>
+
 export interface BaseOptions {
   options?: Options
 }
