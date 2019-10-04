@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "publish": "lerna run build && lerna publish"
+    "release": "lerna run build && lerna publish"
   },
   "devDependencies": {
     "lerna": "^3.16.4"
