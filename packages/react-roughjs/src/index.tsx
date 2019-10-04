@@ -74,7 +74,7 @@ export interface RectangleProps extends BaseOptions {
 
 export const Rectangle: React.FC<RectangleProps> = (props) => {
   useDrawEffect('rectangle', [
-    props.x, props.y, props.height, props.width, props.options,
+    props.x, props.y, props.width, props.height, props.options,
   ])
   return null
 }
