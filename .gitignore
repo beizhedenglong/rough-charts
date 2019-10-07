@@ -67,3 +67,4 @@ dist
 
 lerna-debug.log
 .DS_store
+packages/examples

@@ -11,6 +11,8 @@
     "release": "lerna run build && lerna publish"
   },
   "devDependencies": {
-    "lerna": "^3.16.4"
+    "lerna": "^3.16.4",
+    "parcel-bundler": "^1.12.3",
+    "typescript": "3.5.2"
   }
 }
