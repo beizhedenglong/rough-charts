@@ -15,7 +15,7 @@ export interface ArcProps extends BaseOptions {
 export const Arc: React.FC<ArcProps> = (props) => {
   useDrawEffect('arc',
     [props.x, props.y, props.width, props.height, props.start,
-      props.stop, props.closed, props.options])
+      props.stop, props.closed, props.options], props)
   return null
 }
 

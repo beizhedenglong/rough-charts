@@ -7,7 +7,7 @@ export interface CurveProps extends BaseOptions {
 }
 
 export const Curve: React.FC<CurveProps> = (props) => {
-  useDrawEffect('curve', [props.points, props.options])
+  useDrawEffect('curve', [props.points, props.options], props)
   return null
 }
 

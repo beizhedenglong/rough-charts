@@ -14,7 +14,7 @@ export const Line: React.FC<LineProps> = (props) => {
   const {
     x1, x2, y1, y2, options,
   } = props
-  useDrawEffect('line', [x1, y1, x2, y2, options])
+  useDrawEffect('line', [x1, y1, x2, y2, options], props)
   return null
 }
 

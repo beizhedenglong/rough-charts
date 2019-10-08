@@ -7,7 +7,7 @@ export interface LinearPathProps extends BaseOptions {
 }
 
 export const LinearPath: React.FC<LinearPathProps> = (props) => {
-  useDrawEffect('linearPath', [props.points, props.options])
+  useDrawEffect('linearPath', [props.points, props.options], props)
   return null
 }
 

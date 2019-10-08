@@ -7,7 +7,7 @@ export interface PolygonProps extends BaseOptions {
 }
 
 export const Polygon: React.FC<PolygonProps> = (props) => {
-  useDrawEffect('polygon', [props.vertices, props.options])
+  useDrawEffect('polygon', [props.vertices, props.options], props)
   return null
 }
 

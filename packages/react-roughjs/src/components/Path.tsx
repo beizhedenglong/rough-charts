@@ -7,7 +7,7 @@ export interface PathProps extends BaseOptions {
 }
 
 export const Path: React.FC<PathProps> = (props) => {
-  useDrawEffect('path', [props.d, props.options])
+  useDrawEffect('path', [props.d, props.options], props)
   return null
 }
 

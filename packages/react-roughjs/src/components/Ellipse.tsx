@@ -9,10 +9,11 @@ export interface EllipseProps extends BaseOptions {
   height?: number
 }
 
-export const Ellipse: React.FC<EllipseProps> = ({
-  x, y, width, height, options,
-}) => {
-  useDrawEffect('ellipse', [x, y, width, height, options])
+export const Ellipse: React.FC<EllipseProps> = (props) => {
+  const {
+    x, y, width, height, options,
+  } = props
+  useDrawEffect('ellipse', [x, y, width, height, options], props)
   return null
 }
 

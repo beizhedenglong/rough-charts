@@ -3,7 +3,7 @@ import * as React from 'react'
 import { RoughSVG } from 'roughjs/src/svg'
 import * as d3Shape from 'd3-shape'
 import { Context } from './components/Context'
-import { Handlers } from './baseTypes'
+import { BaseOptions } from './baseTypes'
 import { loopHandlers } from './utils'
 
 export type DrawFunction = 'line' | 'rectangle' | 'ellipse' | 'circle' | 'linearPath' | 'polygon' | 'arc' | 'curve' | 'path'
@@ -46,9 +46,10 @@ const createSvgNode = (tagName: string, attributes: any) => {
   return node
 }
 export function useDrawEffect<T extends DrawFunction>(
-  drawFnName: T, deps: Parameters<RoughSVG[T]>, handlers: Handlers = {},
+  drawFnName: T, deps: Parameters<RoughSVG[T]>, props: BaseOptions = {},
 ) {
   const value = React.useContext(Context)
+  const nodeRef = React.useRef<SVGGElement>(null)
   if (!value) {
     throw Error('Wrap Component inside <RoughProvider>')
   }
@@ -68,18 +69,49 @@ export function useDrawEffect<T extends DrawFunction>(
         return null
     }
   }
+  const {
+    transform, opacity, onClick, onMouseOut, onMouseOver,
+  } = props
+  const handlers = { onClick, onMouseOut, onMouseOver }
+  const setAttribute = (node: SVGElement, attrs: object) => {
+    Object.keys(attrs).forEach((attrName) => {
+      if (attrs[attrName] !== undefined) {
+        node.setAttribute(attrName, attrs[attrName])
+      }
+    })
+  }
+
+  // Style Effect
+  React.useEffect(() => {
+    if (nodeRef.current) {
+      setAttribute(nodeRef.current, {
+        transform,
+        opacity,
+      })
+    }
+  }, [transform, opacity])
   React.useEffect(() => {
     if (value.root) {
       const node = (value.rough[drawFnName as any](...deps as any) as SVGGElement)
+      nodeRef.current = node
       const fakeNode = creteFakeNode()
+      setAttribute(node, {
+        transform,
+        opacity,
+      })
       value.root.appendChild(node)
       if (fakeNode) {
         loopHandlers(fakeNode, 'addEventListener', handlers)
+        setAttribute(fakeNode, {
+          transform,
+          opacity,
+        })
         value.root.appendChild(fakeNode)
       } else {
         loopHandlers(node, 'addEventListener', handlers)
       }
       return () => {
+        nodeRef.current = null
         value.root.removeChild(node)
         if (fakeNode) {
           loopHandlers(fakeNode, 'removeEventListener', handlers)

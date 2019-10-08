@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { BaseOptions, Handlers } from '../baseTypes'
+import { BaseOptions } from '../baseTypes'
 import { useDrawEffect } from '../useDrawEffect'
 
 export interface RectangleProps extends BaseOptions {
@@ -11,16 +11,11 @@ export interface RectangleProps extends BaseOptions {
 
 export const Rectangle: React.FC<RectangleProps> = (props) => {
   const {
-    x, y, width, height, options, onClick, onMouseOut, onMouseOver,
+    x, y, width, height, options,
   } = props
-  const handlers: Handlers = {
-    onClick,
-    onMouseOver,
-    onMouseOut,
-  }
   useDrawEffect('rectangle', [
     x, y, width, height, options,
-  ], handlers)
+  ], props)
   return null
 }
 

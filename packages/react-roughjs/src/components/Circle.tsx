@@ -9,7 +9,7 @@ export interface CircleProps extends BaseOptions {
   diameter?: number
 }
 export const Circle: React.FC<CircleProps> = (props) => {
-  useDrawEffect('circle', [props.x, props.y, props.diameter, props.options])
+  useDrawEffect('circle', [props.x, props.y, props.diameter, props.options], props)
   return null
 }
 
