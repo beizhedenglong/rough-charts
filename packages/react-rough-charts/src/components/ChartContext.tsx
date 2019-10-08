@@ -35,12 +35,14 @@ export function useChartContext<T extends any>(props: ChartContextProps<T>): Cha
       ...value.margin,
       ...(props.margin || {}),
     },
-    data: value.data,
+    data: !isNil(props.data) ? props.data : value.data,
   }
 }
 
 const { Provider } = ChartContext
-
+const defaultMargin = {
+  top: 10, right: 10, bottom: 70, left: 60,
+}
 export const ChartProvider: React.FC<ChartContextProps> = (props) => {
   const [height, setHeight] = React.useState(0)
   const [width, setWidth] = React.useState(0)
@@ -63,7 +65,8 @@ export const ChartProvider: React.FC<ChartContextProps> = (props) => {
     height: !isNil(props.height) ? props.height : height,
     width: !isNil(props.width) ? props.width : width,
   }
-
+  const shouldRenderChildren = () => (dimension.height && dimension.width)
+  const { margin } = props
   return (
     <RoughProvider
       {...dimension}
@@ -81,8 +84,14 @@ export const ChartProvider: React.FC<ChartContextProps> = (props) => {
           ...props,
           height: dimension.height,
           width: dimension.width,
+          margin: {
+            ...defaultMargin,
+            ...margin,
+          },
         }}
-      />
+      >
+        {shouldRenderChildren() && props.children}
+      </Provider>
     </RoughProvider>
   )
 }
@@ -91,9 +100,7 @@ ChartProvider.displayName = 'ChartProvider'
 ChartProvider.defaultProps = {
   data: [],
   options: {},
-  margin: {
-    top: 10, right: 10, bottom: 70, left: 60,
-  },
+  margin: defaultMargin,
 }
 
 export default ChartContext
