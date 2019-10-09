@@ -2,6 +2,7 @@
 import * as React from 'react'
 import { RoughSVG } from 'roughjs/src/svg'
 import * as d3Shape from 'd3-shape'
+import { useShallowEqual } from './useShallowEqual'
 import { Context } from './components/Context'
 import { BaseOptions } from './baseTypes'
 import { loopHandlers } from './utils'
@@ -65,16 +66,25 @@ export function useDrawEffect<T extends DrawFunction>(
       case 'arc':
         // TODO
         return null
+      case 'path':
+        return createSvgNode('path', {
+          d: deps[0],
+        })
       default:
         return null
     }
   }
   const {
     transform, opacity, onClick, onMouseOut, onMouseOver,
+    cursor, strokeDasharray,
   } = props
   const handlers = { onClick, onMouseOut, onMouseOver }
   const setAttribute = (node: SVGElement, attrs: object) => {
     Object.keys(attrs).forEach((attrName) => {
+      if (attrName === 'strokeDasharray') {
+        node.setAttribute('stroke-dasharray', attrs[attrName])
+        return
+      }
       if (attrs[attrName] !== undefined) {
         node.setAttribute(attrName, attrs[attrName])
       }
@@ -87,10 +97,12 @@ export function useDrawEffect<T extends DrawFunction>(
       setAttribute(nodeRef.current, {
         transform,
         opacity,
+        cursor,
+        strokeDasharray,
       })
     }
-  }, [transform, opacity])
-  React.useEffect(() => {
+  }, [transform, opacity, cursor])
+  useShallowEqual(() => {
     if (value.root) {
       const node = (value.rough[drawFnName as any](...deps as any) as SVGGElement)
       nodeRef.current = node
@@ -98,13 +110,15 @@ export function useDrawEffect<T extends DrawFunction>(
       setAttribute(node, {
         transform,
         opacity,
+        cursor,
+        strokeDasharray,
       })
       value.root.appendChild(node)
       if (fakeNode) {
         loopHandlers(fakeNode, 'addEventListener', handlers)
         setAttribute(fakeNode, {
           transform,
-          opacity,
+          cursor,
         })
         value.root.appendChild(fakeNode)
       } else {

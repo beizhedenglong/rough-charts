@@ -14,5 +14,7 @@ export interface Handlers {
 export interface BaseOptions extends Handlers {
   options?: Options
   transform?: string,
-  opacity?: number
+  opacity?: number,
+  cursor?: string
+  strokeDasharray?: string
 }

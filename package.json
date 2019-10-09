@@ -11,8 +11,21 @@
     "release": "lerna run build && lerna publish"
   },
   "devDependencies": {
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "3.0.2",
+    "husky": "^3.0.8",
     "lerna": "^3.16.4",
     "parcel-bundler": "^1.12.3",
     "typescript": "3.5.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
   }
 }
