@@ -1,6 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react'
 import * as d3Scale from 'd3-scale'
+import {
+  Line, LineProps,
+} from 'react-roughjs'
 import { useChartContext } from './ChartContext'
 import { withChartProvider } from './withChartProvider'
 import { XAxis, XAxisProps } from './XAxis'
@@ -30,7 +33,7 @@ export interface BarChartProps<T = any> extends BaseChartProps<T> {
 
 export const BarChart = withChartProvider(<ItemType extends object>(props: BarChartProps<ItemType>) => { // eslint-disable-line
   const {
-    data, width, height, margin,
+    data, options, contentHeight, contentWidth,
   } = useChartContext(props)
   const cloneChildren = () => {
     let xScaleKey:string
@@ -40,7 +43,7 @@ export const BarChart = withChartProvider(<ItemType extends object>(props: BarCh
     const generateXScale = key => d3Scale
       .scaleBand()
       .domain(data.map(d => d[key]))
-      .range([margin.left, width - margin.right - margin.left])
+      .range([0, contentWidth])
       .padding(0.2)
 
     xAxisElement = filterChildren(name => name === childNameMap.XAxis, props.children)[0] // eslint-disable-line
@@ -63,9 +66,8 @@ export const BarChart = withChartProvider(<ItemType extends object>(props: BarCh
       return acc
     }, [])
     const yScale = d3Scale.scaleLinear()
-      .domain([0, Math.max(...numbers)])
-      .range([height - margin.bottom - margin.top, margin.top])
-
+      .domain([Math.min(...numbers), Math.max(...numbers)])
+      .range([contentHeight, 0])
 
     if (barSeriesElements.length > 0) {
       const firstBarSeries = barSeriesElements[0]
@@ -78,8 +80,7 @@ export const BarChart = withChartProvider(<ItemType extends object>(props: BarCh
         barScale,
       }), barSeriesElements)
     }
-
-    return mapChildren((displayName) => {
+    const children = mapChildren((displayName) => {
       if (displayName === childNameMap.XAxis) {
         return {
           scale: xScale,
@@ -94,6 +95,28 @@ export const BarChart = withChartProvider(<ItemType extends object>(props: BarCh
       }
       return {}
     }, props.children)
+    const YDomain = yScale.domain()
+    const min = YDomain[0]
+    if (min < 0) {
+      // TODO
+      const max = Math.max(Math.abs(YDomain[0]), Math.abs(YDomain[1]))
+      yScale.domain([-max, max])
+      const y0 = yScale(0)
+      const horizontalLine = React.createElement(Line, {
+        key: 'horizontalLine',
+        x1: 0,
+        y1: y0,
+        x2: contentWidth,
+        y2: y0,
+        strokeDasharray: '30',
+        options: {
+          bowing: 0.2,
+          ...options,
+        },
+      } as LineProps)
+      return [...React.Children.toArray(children), horizontalLine]
+    }
+    return children
   }
   return (
     <React.Fragment>

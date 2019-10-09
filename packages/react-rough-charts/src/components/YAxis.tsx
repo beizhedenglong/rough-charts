@@ -13,7 +13,7 @@ export interface YAxisProps extends BaseChartComponentProps {
 
 export const YAxis: React.FC<YAxisProps> = (props) => {
   const {
-    height, options, margin,
+    options, contentHeight,
   } = useChartContext(props)
   const {
     tickSize, fontSize, scale,
@@ -23,10 +23,10 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
   return (
     <React.Fragment>
       <Line
-        x1={margin.left}
-        y1={margin.top}
-        x2={margin.left}
-        y2={height - margin.bottom - margin.top}
+        x1={0}
+        y1={0}
+        x2={0}
+        y2={contentHeight}
         options={{
           bowing: 0.2,
           ...options,
@@ -38,8 +38,8 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
             key={index}
           >
             <Line
-              x1={margin.left - tickSize}
-              x2={margin.left}
+              x1={0 - tickSize}
+              x2={0}
               y1={scale(t)}
               y2={scale(t)}
               options={{
@@ -48,7 +48,7 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
               }}
             />
             <text
-              x={margin.left - tickSize}
+              x={0 - tickSize}
               y={scale(t) + fontSize / 3}
               stroke={options.stroke}
               fill={options.stroke}

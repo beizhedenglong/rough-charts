@@ -12,12 +12,12 @@ export interface RoughProviderProps extends React.SVGAttributes<SVGGElement> {
   config?: Config
 }
 
-const ref = React.createRef<SVGSVGElement>()
 
 export const RoughProvider: React.FC<RoughProviderProps> = (props: RoughProviderProps) => {
   RoughProvider.displayName = 'RoughProvider'
   const { Provider } = Context
   const { config, ...rest } = props
+  const ref = React.useRef<SVGSVGElement>()
   const [value, setValue] = React.useState<ContextProps>({ root: null, rough: null })
   React.useEffect(() => {
     setValue({

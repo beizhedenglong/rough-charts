@@ -1,10 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react'
 import * as d3Shape from 'd3-shape'
-import { Path, RoughOptions } from 'react-roughjs'
+import { RoughOptions, PathProps } from 'react-roughjs'
 import { useChartContext } from './ChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
-import { isNil } from '../utils'
+import { isNil, cloneElement, isFunction } from '../utils'
+import { Arc, ArcProps } from './Arc'
 
 
 export interface ArcSeriesProps<T> extends BaseChartComponentProps {
@@ -15,24 +16,33 @@ export interface ArcSeriesProps<T> extends BaseChartComponentProps {
   cx?: number
   cy?: number
   padAngle?: number
+  startAngle?: number
+  endAngle?: number
   children?: React.ReactNode
   generateItemOptions?: (item: T, index: number) => RoughOptions
+  renderItem?: (item: T, index: number) => React.ReactElement<PathProps>
 }
 
 export const ArcSeries = <T extends object>(props: ArcSeriesProps<T>) => { // eslint-disable-line
   const {
-    data, width, height, margin,
+    data, width, height, margin, options,
   } = useChartContext(props)
   const {
-    dataKey, cx, cy, innerRadiusPercent, outerRadiusPercent, padAngle,
-    generateItemOptions,
+    dataKey, cx, cy, innerRadiusPercent, outerRadiusPercent,
+    padAngle: padAngleProp,
+    startAngle: startAngleProp,
+    endAngle: endAngleProp,
   } = props
   const newCx = !isNil(cx) ? cx : (width - margin.left - margin.right) / 2
   const newCy = !isNil(cy) ? cy : (height - margin.bottom - margin.top) / 2
   const radius = Math.min(newCx, newCy)
-  const arcs = d3Shape.pie()(data.map(d => d[dataKey]))
+
+  const arcs = d3Shape.pie()
+    .startAngle(startAngleProp)
+    .padAngle(padAngleProp)
+    .endAngle(endAngleProp)(data.map(d => d[dataKey]))
   const paths = arcs.map((arc) => {
-    const { startAngle, endAngle } = arc
+    const { startAngle, endAngle, padAngle } = arc
     const a = d3Shape.arc()
     return a({
       innerRadius: radius * innerRadiusPercent,
@@ -42,19 +52,32 @@ export const ArcSeries = <T extends object>(props: ArcSeriesProps<T>) => { // es
       padAngle,
     })
   })
+
+  const renderPath = (d:string, index:number) => {
+    const { renderItem } = props
+    const additionalProps = {
+      d,
+      key: index,
+      transform: `translate(${newCx}, ${newCy})`,
+      options: {
+        fill: 'black',
+        ...options,
+      },
+    } as ArcProps
+
+    if (isFunction(renderItem)) {
+      const item = renderItem(data[index], index)
+      return cloneElement(
+        displayName => (displayName === Arc.displayName ? additionalProps : {}), item,
+      )
+    }
+
+    return <Arc {...additionalProps} />
+  }
+
   return (
     <React.Fragment>
-      {paths.map((d, index) => (
-        <Path
-          d={d}
-          key={index}
-          transform={`translate(${newCx}, ${newCy})`}
-          options={{
-            fill: 'black',
-            ...(generateItemOptions(data[index], index) || {}),
-          }}
-        />
-      ))}
+      {paths.map(renderPath)}
     </React.Fragment>
   )
 }
@@ -64,7 +87,8 @@ ArcSeries.defaultProps = {
   innerRadiusPercent: 0,
   outerRadiusPercent: 1,
   padAngle: 0,
-  generateItemOptions: () => ({}),
+  startAngle: 0,
+  endAngle: Math.PI * 2,
 }
 
 export default ArcSeries

@@ -2,21 +2,40 @@ import * as React from 'react'
 
 export const isNil = x => x == null
 
+export const isFunction = x => typeof x === 'function'
 
-// eslint-disable-next-line
-export const mapChildren = (f: (displayName: string, props: object, index: number) => object, children: any) => React.Children.map(children, (child, index) => {
-  if (!child) {
-    return child
+
+export const cloneElement = (
+  f: (displayName: string, props: object) => object,
+  child: any,
+) => {
+  if (!React.isValidElement(child as any)) {
+    return null
   }
-  const { displayName } = child.type
-  const newProps = f(displayName, child.props, index)
-
-  Object.entries(newProps).forEach(([propName]) => {
+  const additionalProps = f(child.type.displayName, child.props)
+  Object.entries(additionalProps).forEach(([propName, value]) => {
+    if (propName === 'options') {
+      additionalProps[propName] = {
+        ...value,
+        ...child.props.options,
+      }
+      return
+    }
     if (!isNil(child.props[propName])) {
-      newProps[propName] = child.props[propName]
+      additionalProps[propName] = child.props[propName]
     }
   })
-  return React.cloneElement(child, newProps)
+  return React.cloneElement(child, additionalProps)
+}
+// eslint-disable-next-line
+export const mapChildren = (f: (displayName: string, props: object, index: number) => object, children: any): any => React.Children.map(children, (child, index) => {
+  if (!React.isValidElement(child as any)) {
+    return null
+  }
+
+  return cloneElement(
+    (displayName, props) => f(displayName, props, index), child,
+  )
 })
 
 export const filterChildren = (
@@ -25,7 +44,7 @@ export const filterChildren = (
 ) => {
   const result = []
   React.Children.forEach(children, (child, index) => {
-    if (!child) {
+    if (!React.isValidElement(child as any)) {
       return
     }
     const { displayName } = child.type

@@ -32,7 +32,7 @@ export const BarSeries: React.FC<BarSeriesProps> = (props) => {
             .range([x, x + xScale.bandwidth()])
             .paddingInner(0.2)
 
-          const y = yScale(item[dataKey])
+          const y = yScale(Math.max(item[dataKey], 0))
 
           return (
             <Rectangle
@@ -40,7 +40,7 @@ export const BarSeries: React.FC<BarSeriesProps> = (props) => {
               x={barScale(dataKey)}
               y={y}
               width={barScale.bandwidth()}
-              height={height - y - margin.top - margin.bottom}
+              height={Math.abs(yScale(item[dataKey]) - yScale(0))}
               options={options}
             />
           )

@@ -14,7 +14,7 @@ export interface XAxisProps extends BaseChartComponentProps {
 
 export const XAxis: React.FC<XAxisProps> = (props) => {
   const {
-    width, height, margin, options,
+    options, contentHeight, contentWidth,
   } = useChartContext(props)
   const {
     tickSize, fontSize, scale,
@@ -22,13 +22,13 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
 
   const x = scale
   const ticks = (x as any).ticks ? (x as any).ticks() : x.domain()
-  const y = height - margin.bottom - margin.top
+  const y = contentHeight
   return (
     <React.Fragment>
       <Line
-        x1={margin.left}
+        x1={0}
         y1={y}
-        x2={width - margin.right}
+        x2={contentWidth}
         y2={y}
         options={{
           bowing: 0.2,

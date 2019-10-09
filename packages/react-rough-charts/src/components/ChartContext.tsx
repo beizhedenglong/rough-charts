@@ -19,22 +19,32 @@ export interface ChartContextProps<T=any> {
 
 export const ChartContext = React.createContext<ChartContextProps>(null)
 
-export function useChartContext<T extends any>(props: ChartContextProps<T>): ChartContextProps<T> {
+export function useChartContext<T extends any>(
+  props: ChartContextProps<T>,
+): ChartContextProps<T> & {
+    contentHeight: number,
+    contentWidth: number
+  } {
   const value = React.useContext(ChartContext)
   if (value === null) {
     throw Error('General Components must be wrapped in Chart Component!')
   }
+  const margin = {
+    ...value.margin,
+    ...(props.margin || {}),
+  }
+  const width = !isNil(props.width) ? props.width : value.width
+  const height = !isNil(props.height) ? props.height : value.height
   return {
-    width: !isNil(props.width) ? props.width : value.width,
-    height: !isNil(props.height) ? props.height : value.height,
+    width,
+    height,
+    contentWidth: width - margin.left - margin.right,
+    contentHeight: height - margin.top - margin.bottom,
     options: {
       ...(value.options),
       ...(props.options || {}),
     },
-    margin: {
-      ...value.margin,
-      ...(props.margin || {}),
-    },
+    margin,
     data: !isNil(props.data) ? props.data : value.data,
   }
 }
@@ -44,55 +54,56 @@ const defaultMargin = {
   top: 10, right: 10, bottom: 70, left: 60,
 }
 export const ChartProvider: React.FC<ChartContextProps> = (props) => {
-  const [height, setHeight] = React.useState(0)
-  const [width, setWidth] = React.useState(0)
+  const [innerHeight, setInnerHeight] = React.useState(0)
+  const [innerWidth, setInnerWidth] = React.useState(0)
+  const ref = React.useRef<SVGSVGElement>()
 
-  let node: SVGSVGElement
-
-  const handleResize = React.useCallback(() => {
-    if (node && (isNil(props.height) || isNil(props.width))) {
-      const boundingRect = node.parentElement.getBoundingClientRect()
-      setHeight(boundingRect.height)
-      setWidth(boundingRect.width)
-    }
-  }, [])
   React.useEffect(() => {
+    const handleResize = () => {
+      if (ref.current && (isNil(props.height) || isNil(props.width))) {
+        const boundingRect = ref.current.parentElement.getBoundingClientRect()
+        setInnerHeight(boundingRect.height)
+        setInnerWidth(boundingRect.width)
+      }
+    }
+    handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [props.height, props.width, ref.current])
 
-  const dimension = {
-    height: !isNil(props.height) ? props.height : height,
-    width: !isNil(props.width) ? props.width : width,
-  }
-  const shouldRenderChildren = () => (dimension.height && dimension.width)
+
+  const height = !isNil(props.height) ? props.height : innerHeight
+  const width = !isNil(props.width) ? props.width : innerWidth
+
   const { margin } = props
+  const shouldRenderChildren = () => (height && width)
   return (
-    <RoughProvider
-      {...dimension}
-      config={{
-        options: props.options,
-      }}
-      innerRef={(elem) => {
-        node = elem
-        handleResize()
+    <Provider
+      value={{
+        ...props,
+        height,
+        width,
+        margin: {
+          ...defaultMargin,
+          ...margin,
+        },
       }}
     >
-      <Provider
-        {...props}
-        value={{
-          ...props,
-          height: dimension.height,
-          width: dimension.width,
-          margin: {
-            ...defaultMargin,
-            ...margin,
-          },
-        }}
+      <svg
+        height={height}
+        width={width}
+        ref={ref}
       >
-        {shouldRenderChildren() && props.children}
-      </Provider>
-    </RoughProvider>
+        <RoughProvider
+          transform={`translate(${margin.left}, ${margin.top})`}
+          config={{
+            options: props.options,
+          }}
+        >
+          {shouldRenderChildren() && props.children}
+        </RoughProvider>
+      </svg>
+    </Provider>
   )
 }
 
