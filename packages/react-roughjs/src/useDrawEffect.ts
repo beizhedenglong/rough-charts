@@ -4,7 +4,7 @@ import { RoughSVG } from 'roughjs/src/svg'
 import * as d3Shape from 'd3-shape'
 import { useShallowEqual } from './useShallowEqual'
 import { Context } from './components/Context'
-import { BaseOptions } from './baseTypes'
+import { BaseOptions, RoughOptions } from './baseTypes'
 import { loopHandlers } from './utils'
 
 export type DrawFunction = 'line' | 'rectangle' | 'ellipse' | 'circle' | 'linearPath' | 'polygon' | 'arc' | 'curve' | 'path'
@@ -67,8 +67,10 @@ export function useDrawEffect<T extends DrawFunction>(
         // TODO
         return null
       case 'path':
+        const pathOptions = deps[1] as RoughOptions
         return createSvgNode('path', {
           d: deps[0],
+          fill: pathOptions.fill ? 'black' : 'none',
         })
       default:
         return null
@@ -113,6 +115,7 @@ export function useDrawEffect<T extends DrawFunction>(
         cursor,
         strokeDasharray,
       })
+      // NOTE node will be last child of its parent. Will cause some shadowing issues
       value.root.appendChild(node)
       if (fakeNode) {
         loopHandlers(fakeNode, 'addEventListener', handlers)
@@ -136,5 +139,6 @@ export function useDrawEffect<T extends DrawFunction>(
       }
     }
     return () => { }
-  }, [value, ...deps])
+  }, [value.root, ...deps])
+  return value
 }

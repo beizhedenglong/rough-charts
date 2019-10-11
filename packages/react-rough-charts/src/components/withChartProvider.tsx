@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ChartProvider } from './ChartContext'
+import { ChartProvider } from './ChartProvider'
 import { BaseChartProps } from '../baseTypes'
 
 // eslint-disable-next-line

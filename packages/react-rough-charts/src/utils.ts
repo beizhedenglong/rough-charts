@@ -4,6 +4,13 @@ export const isNil = x => x == null
 
 export const isFunction = x => typeof x === 'function'
 
+export const removeDuplicates = <T extends any>(xs: T[]) => { // eslint-disable-line
+  const res: any = {}
+  xs.forEach((key) => {
+    res[key] = true
+  })
+  return Object.keys(res)
+}
 
 export const cloneElement = (
   f: (displayName: string, props: object) => object,

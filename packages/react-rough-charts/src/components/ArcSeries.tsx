@@ -2,7 +2,7 @@
 import * as React from 'react'
 import * as d3Shape from 'd3-shape'
 import { RoughOptions, PathProps } from 'react-roughjs'
-import { useChartContext } from './ChartContext'
+import { useChartContext } from '../hooks/useChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
 import { isNil, cloneElement, isFunction } from '../utils'
 import { Arc, ArcProps } from './Arc'
@@ -25,7 +25,7 @@ export interface ArcSeriesProps<T> extends BaseChartComponentProps {
 
 export const ArcSeries = <T extends object>(props: ArcSeriesProps<T>) => { // eslint-disable-line
   const {
-    data, width, height, margin, options,
+    data, options, contentHeight, contentWidth,
   } = useChartContext(props)
   const {
     dataKey, cx, cy, innerRadiusPercent, outerRadiusPercent,
@@ -33,8 +33,8 @@ export const ArcSeries = <T extends object>(props: ArcSeriesProps<T>) => { // es
     startAngle: startAngleProp,
     endAngle: endAngleProp,
   } = props
-  const newCx = !isNil(cx) ? cx : (width - margin.left - margin.right) / 2
-  const newCy = !isNil(cy) ? cy : (height - margin.bottom - margin.top) / 2
+  const newCx = !isNil(cx) ? cx : contentWidth / 2
+  const newCy = !isNil(cy) ? cy : contentHeight / 2
   const radius = Math.min(newCx, newCy)
 
   const arcs = d3Shape.pie()

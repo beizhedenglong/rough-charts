@@ -1,23 +1,25 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react'
 import { Line } from 'react-roughjs'
-import { ScaleBand } from 'd3-scale'
-import { useChartContext } from './ChartContext'
+import { useChartContext } from '../hooks/useChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
 
 export interface YAxisProps extends BaseChartComponentProps {
   tickSize?: number
   fontSize?: number
-  scale?: ScaleBand<any>
 }
 
 export const YAxis: React.FC<YAxisProps> = (props) => {
   const {
-    options, contentHeight,
-  } = useChartContext(props)
-  const {
-    tickSize, fontSize, scale,
+    tickSize, fontSize,
   } = props
+  const {
+    options, contentHeight, scaleData,
+  } = useChartContext(props)
+  const { yScale: scale } = scaleData
+  if (!scale) {
+    return null
+  }
 
   const ticks = (scale as any).ticks ? (scale as any).ticks() : scale.domain()
   return (

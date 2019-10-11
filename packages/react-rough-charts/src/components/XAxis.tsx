@@ -1,27 +1,29 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react'
 import { Line } from 'react-roughjs'
-import { ScaleBand } from 'd3-scale'
-import { useChartContext } from './ChartContext'
+import { useChartContext } from '../hooks/useChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
 
 export interface XAxisProps extends BaseChartComponentProps {
   dataKey: string
   tickSize?: number
   fontSize?: number
-  scale?: ScaleBand<any>
 }
 
 export const XAxis: React.FC<XAxisProps> = (props) => {
   const {
-    options, contentHeight, contentWidth,
-  } = useChartContext(props)
+    options, contentHeight, contentWidth, scaleData,
+  } = useChartContext(props, 'xDataKey')
+  const { xScale } = scaleData
   const {
-    tickSize, fontSize, scale,
+    tickSize, fontSize,
   } = props
+  if (!xScale) {
+    return null
+  }
 
-  const x = scale
-  const ticks = (x as any).ticks ? (x as any).ticks() : x.domain()
+  const ticks = ('ticks' in xScale) ? xScale.ticks() : xScale.domain()
+  const bandwidth = xScale(ticks[1]) - xScale(ticks[0])
   const y = contentHeight
   return (
     <React.Fragment>
@@ -41,9 +43,9 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
             key={index}
           >
             <Line
-              x1={x(t) + x.bandwidth() / 2}
+              x1={xScale(t) + bandwidth / 2}
               y1={y}
-              x2={x(t) + x.bandwidth() / 2}
+              x2={xScale(t) + bandwidth / 2}
               y2={y + tickSize}
               options={{
                 strokeWidth: 2,
@@ -51,7 +53,7 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
               }}
             />
             <text
-              x={x(t) + x.bandwidth() / 2}
+              x={xScale(t) + bandwidth / 2}
               y={y + tickSize + fontSize}
               stroke={options.stroke}
               fill={options.stroke}

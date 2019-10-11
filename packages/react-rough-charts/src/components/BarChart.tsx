@@ -4,14 +4,14 @@ import * as d3Scale from 'd3-scale'
 import {
   Line, LineProps,
 } from 'react-roughjs'
-import { useChartContext } from './ChartContext'
+import { useChartContext } from '../hooks/useChartContext'
 import { withChartProvider } from './withChartProvider'
 import { XAxis, XAxisProps } from './XAxis'
 import { YAxis } from './YAxis'
+
 import { BarSeries, BarSeriesProps } from './BarSeries'
 import { BaseChartProps } from '../baseTypes'
 import { mapChildren, filterChildren } from '../utils'
-
 
 interface ChildNameMap {
   XAxis?: string
@@ -45,7 +45,6 @@ export const BarChart = withChartProvider(<ItemType extends object>(props: BarCh
       .domain(data.map(d => d[key]))
       .range([0, contentWidth])
       .padding(0.2)
-
     xAxisElement = filterChildren(name => name === childNameMap.XAxis, props.children)[0] // eslint-disable-line
 
     if (xAxisElement) {
@@ -98,9 +97,6 @@ export const BarChart = withChartProvider(<ItemType extends object>(props: BarCh
     const YDomain = yScale.domain()
     const min = YDomain[0]
     if (min < 0) {
-      // TODO
-      const max = Math.max(Math.abs(YDomain[0]), Math.abs(YDomain[1]))
-      yScale.domain([-max, max])
       const y0 = yScale(0)
       const horizontalLine = React.createElement(Line, {
         key: 'horizontalLine',

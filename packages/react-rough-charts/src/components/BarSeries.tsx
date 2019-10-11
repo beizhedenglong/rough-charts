@@ -1,47 +1,63 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react'
-import { Rectangle } from 'react-roughjs'
-import { ScaleBand } from 'd3-scale'
-import { useChartContext } from './ChartContext'
+import { Rectangle, RectangleProps } from 'react-roughjs'
+import { useChartContext } from '../hooks/useChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
+import { isFunction } from '../utils'
 
-export interface BarSeriesProps extends BaseChartComponentProps {
-  dataKey: string
-  xScale?: ScaleBand<any>
-  yScale?: any
-  barScale?: ScaleBand<any>
-  xScaleKey?: string
+export interface BarSeriesProps<T extends object> extends BaseChartComponentProps {
+  dataKey: string,
+  children?: (item: T, props: RectangleProps, index: number) => JSX.Element
 }
 
-export const BarSeries: React.FC<BarSeriesProps> = (props) => {
+export const BarSeries  = <T extends object>(props: BarSeriesProps<T>) => { // eslint-disable-line
   const {
-    height, margin, data,
-  } = useChartContext(props)
-  const {
-    xScale, dataKey, yScale, barScale, xScaleKey, options,
+    dataKey, options,
   } = props
+  const {
+    data, contentHeight, scaleData,
+  } = useChartContext(props, 'barDataKeys')
+  const {
+    xScale, barScale, yScale, xDataKey,
+  } = scaleData
   if (!dataKey) {
     throw Error('dataKey is Required!')
   }
+  // TODO xDataKey
+  if (!xScale || !barScale || !yScale || !xDataKey) {
+    return null
+  }
+
+  const ticks = ('ticks' in xScale) ? xScale.ticks() : xScale.domain()
+  const width = xScale(ticks[1]) - xScale(ticks[0])
+  const offset = (width * 0.2) / 2
+  const generateChildProps = (item:T) => {
+    const x = xScale(item[xDataKey])
+    barScale
+      .range([x + offset, x + width - offset])
+    const min = yScale.domain()[0]
+    const y0 = yScale(0)
+    const itemY = yScale(item[dataKey])
+    const y = min >= 0 ? itemY : yScale(Math.max(item[dataKey], 0))
+    const height = min >= 0 ? contentHeight - itemY : Math.abs(y0 - itemY)
+    return {
+      x: barScale(dataKey),
+      y,
+      width: barScale.bandwidth(),
+      height,
+      options,
+    }
+  }
+  const { children } = props
   return (
     <React.Fragment>
       {
         data.map((item, index) => {
-          const x = xScale(item[xScaleKey])
-          barScale
-            .range([x, x + xScale.bandwidth()])
-            .paddingInner(0.2)
-
-          const y = yScale(Math.max(item[dataKey], 0))
-
-          return (
+          const childProps = generateChildProps(item as T)
+          return isFunction(children) ? children(item as T, childProps, index) : (
             <Rectangle
               key={index}
-              x={barScale(dataKey)}
-              y={y}
-              width={barScale.bandwidth()}
-              height={Math.abs(yScale(item[dataKey]) - yScale(0))}
-              options={options}
+              {...childProps}
             />
           )
         })

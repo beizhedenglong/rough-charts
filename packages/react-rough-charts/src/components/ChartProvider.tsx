@@ -1,62 +1,21 @@
-import { RoughOptions, RoughProvider } from 'react-roughjs'
 import * as React from 'react'
-
+import { RoughProvider } from 'react-roughjs'
+import { ChartContext, ChartContextArgument, ScaleData } from '../ChartContext'
 import { isNil } from '../utils'
-
-export type Margin = {
-  top?: number,
-  bottom?: number
-  left?: number
-  right?: number
-}
-export interface ChartContextProps<T=any> {
-  data?: T[]
-  width?: number
-  height?: number
-  options?: RoughOptions
-  margin?: Margin
-}
-
-export const ChartContext = React.createContext<ChartContextProps>(null)
-
-export function useChartContext<T extends any>(
-  props: ChartContextProps<T>,
-): ChartContextProps<T> & {
-    contentHeight: number,
-    contentWidth: number
-  } {
-  const value = React.useContext(ChartContext)
-  if (value === null) {
-    throw Error('General Components must be wrapped in Chart Component!')
-  }
-  const margin = {
-    ...value.margin,
-    ...(props.margin || {}),
-  }
-  const width = !isNil(props.width) ? props.width : value.width
-  const height = !isNil(props.height) ? props.height : value.height
-  return {
-    width,
-    height,
-    contentWidth: width - margin.left - margin.right,
-    contentHeight: height - margin.top - margin.bottom,
-    options: {
-      ...(value.options),
-      ...(props.options || {}),
-    },
-    margin,
-    data: !isNil(props.data) ? props.data : value.data,
-  }
-}
 
 const { Provider } = ChartContext
 const defaultMargin = {
   top: 10, right: 10, bottom: 70, left: 60,
 }
-export const ChartProvider: React.FC<ChartContextProps> = (props) => {
+
+export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
   const [innerHeight, setInnerHeight] = React.useState(0)
   const [innerWidth, setInnerWidth] = React.useState(0)
   const ref = React.useRef<SVGSVGElement>()
+  const [scaleData, setScaleData] = React.useState<ScaleData<any>>({
+    barDataKeys: [],
+    lineDataKeys: [],
+  })
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -80,13 +39,17 @@ export const ChartProvider: React.FC<ChartContextProps> = (props) => {
   return (
     <Provider
       value={{
-        ...props,
+        ...props as any,
         height,
         width,
         margin: {
           ...defaultMargin,
           ...margin,
         },
+        scaleData,
+        setScaleData: f => setScaleData(prev => f(prev)),
+        contentHeight: height - margin.bottom - margin.top,
+        contentWidth: width - margin.left - margin.right,
       }}
     >
       <svg
@@ -112,6 +75,8 @@ ChartProvider.defaultProps = {
   data: [],
   options: {},
   margin: defaultMargin,
+  xScaleType: 'scaleBand',
+  yScaleType: 'scaleLinear',
 }
 
-export default ChartContext
+export default RoughProvider
