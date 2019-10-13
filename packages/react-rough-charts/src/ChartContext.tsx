@@ -15,8 +15,12 @@ export interface ScaleData<T> {
   barDataKeys: string[]
   lineDataKeys: string[]
   circleDataKeys: string[]
-  xScale?: ScaleBand<any> | ScaleLinear<any, any>
-  yScale?: ScaleBand<any> | ScaleLinear<any, any>
+  internalXScale: ScaleBand<any> | ScaleLinear<any, any>
+  internalYScale: ScaleBand<any> | ScaleLinear<any, any>
+  xScale: ScaleBand<any> | ScaleLinear<any, any>
+  yScale: ScaleBand<any> | ScaleLinear<any, any>
+  userXScale?: any
+  userYScale?: any
   barScale?: ScaleBand<any>
 }
 export interface TooltipData {

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { RoughProvider } from 'react-roughjs'
+import * as d3Scale from 'd3-scale'
 import {
   ChartContext, ChartContextArgument, ScaleData, TooltipData,
 } from '../ChartContext'
@@ -14,12 +15,18 @@ export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
   const [innerHeight, setInnerHeight] = React.useState(0)
   const [innerWidth, setInnerWidth] = React.useState(0)
   const ref = React.useRef<SVGSVGElement>()
+  const internalXScale = d3Scale.scaleBand()
+  const internalYScale = d3Scale.scaleLinear()
   const [scaleData, setScaleData] = React.useState<ScaleData<any>>({
     barDataKeys: [],
     lineDataKeys: [],
     circleDataKeys: [],
-    xScale: props.xScale,
-    yScale: props.yScale,
+    xScale: props.xScale || internalXScale,
+    yScale: props.yScale || internalYScale,
+    userXScale: props.xScale,
+    userYScale: props.yScale,
+    internalXScale,
+    internalYScale,
   })
   const [tooltipData, setTooltipData] = React.useState<TooltipData>({
     hasToolTip: false,

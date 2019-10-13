@@ -26,8 +26,11 @@ export function useChartContext<T extends object>(
   }
   const {
     data, contentWidth, contentHeight,
-    setScaleData,
+    setScaleData, scaleData,
   } = value
+  const {
+    userXScale, userYScale, internalXScale, internalYScale,
+  } = scaleData
   const { dataKey } = props as any
   React.useEffect(() => {
     if (!scaleKeyName) {
@@ -35,37 +38,53 @@ export function useChartContext<T extends object>(
     }
 
     if (scaleKeyName === 'xDataKey') {
-      const values = data.map(d => d[dataKey])
-      const xScale = value.xScale || d3Scale.scaleBand()
-      xScale.range([0, contentWidth])
-      if (xScale.domain().length < 2) {
-        const domain = getDomain('scaleBand', values)
-        xScale.domain(domain)
+      if (userXScale) {
+        userXScale.range([0, contentWidth])
+        setScaleData(prev => ({
+          ...prev,
+          xScale: userXScale,
+          xDataKey: dataKey,
+        }))
+        return
       }
+      const values = data.map(d => d[dataKey])
+      internalXScale.range([0, contentWidth])
+
+      const domain = getDomain('scaleBand', values)
+      internalXScale.domain(domain)
+
       setScaleData(prev => ({
         ...prev,
         [scaleKeyName]: dataKey,
-        xScale,
+        xScale: internalXScale,
       }))
     }
     if ((scaleKeyName === 'yDataKey') && dataKey) {
-      const values = data.map(d => d[dataKey])
-      const yScale = value.yScale || d3Scale.scaleLinear()
-      yScale.range([0, contentHeight])
-      if (yScale.domain().length < 2) {
+      if (userYScale) {
+        userYScale.range([0, contentHeight])
+        setScaleData(prev => ({
+          ...prev,
+          yScale: userYScale,
+          yDataKey: dataKey,
+        }))
+      } else {
+        const values = data.map(d => d[dataKey])
+        internalYScale.range([0, contentHeight])
         const domain = getDomain('scaleLinear', values)
-        yScale.domain(domain)
+        internalYScale.domain(domain)
+        setScaleData(prev => ({
+          ...prev,
+          [scaleKeyName]: dataKey,
+          yScale: internalYScale,
+        }))
       }
-      setScaleData(prev => ({
-        ...prev,
-        [scaleKeyName]: dataKey,
-        yScale,
-      }))
     }
     const getSeriesScaleData = (prev: ScaleData<T>) => {
-      const { barDataKeys, lineDataKeys, yDataKey } = prev
+      const {
+        barDataKeys, lineDataKeys, yDataKey, circleDataKeys,
+      } = prev
       const prevDataKeys = prev[scaleKeyName]
-      const newDataKeys = prevDataKeys.indexOf(dataKey) > 0
+      const newDataKeys = prevDataKeys.indexOf(dataKey) > -1
         ? prevDataKeys
         : [...prevDataKeys, dataKey]
       const newScaleData = {
@@ -74,23 +93,25 @@ export function useChartContext<T extends object>(
       }
       const values = yDataKey
         ? data.map(d => d[yDataKey])
-        : removeDuplicates([...newDataKeys, ...lineDataKeys, ...barDataKeys])
+        : removeDuplicates([...newDataKeys, ...lineDataKeys, ...barDataKeys, ...circleDataKeys])
           .reduce((acc, groupName) => {
             acc.push(...data.map(item => +item[groupName]))
             return acc
           }, [])
 
       // TODO xScale
-      let { yScale } = prev
-      if (!yScale) {
-        yScale = d3Scale.scaleLinear()
+      if (userYScale) {
+        userYScale.range([contentHeight, 0])
+        newScaleData.yScale = userYScale
+      } else {
         const domain = getDomain('scaleLinear', values)
-        yScale.domain(domain)
+        internalYScale.domain(domain)
+        internalYScale.range([contentHeight, 0])
+        newScaleData.yScale = internalYScale
       }
-      yScale.range([contentHeight, 0])
-      newScaleData.yScale = yScale
       return newScaleData
     }
+
     if (scaleKeyName === 'barDataKeys') {
       setScaleData((prev) => {
         const newScaleData = getSeriesScaleData(prev)
