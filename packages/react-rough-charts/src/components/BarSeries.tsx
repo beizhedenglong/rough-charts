@@ -54,7 +54,10 @@ export const BarSeries  = <T extends object>(props: BarSeriesProps<T>) => { // e
     <React.Fragment>
       {
         data.map((item, index) => {
-          const handlers = generateHandlers(item)
+          const handlers = generateHandlers(item, {
+            name: `${dataKey}`,
+            value: `${item[dataKey]}`,
+          })
           const childProps = generateChildProps(item as T)
           return isFunction(children)
             ? processTooltipHandlers(children(item as T, childProps, index), handlers) : (

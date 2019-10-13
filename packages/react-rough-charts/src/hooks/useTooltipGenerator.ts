@@ -37,7 +37,10 @@ export const useTooltipGenerator = (props: {
     throw Error('dataKey is Required!')
   }
   const { setTooltipData } = useChartContext(props as any)
-  const generateHandlers = item => ({
+  const generateHandlers = (
+    item,
+    content: { name: string, value: string } = { name: '', value: '' },
+  ) => ({
     onMouseOver: (e) => {
       const { x, y } = mousePositions(e)
       setTooltipData(prev => ({
@@ -45,8 +48,8 @@ export const useTooltipGenerator = (props: {
         showToolTip: true,
         x,
         y,
-        name: dataKey,
-        value: item[dataKey],
+        name: content.name,
+        value: content.value,
       }))
     },
     onMouseMove: (e) => {

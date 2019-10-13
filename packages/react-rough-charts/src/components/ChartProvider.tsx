@@ -18,6 +18,8 @@ export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
     barDataKeys: [],
     lineDataKeys: [],
     circleDataKeys: [],
+    xScale: props.xScale,
+    yScale: props.yScale,
   })
   const [tooltipData, setTooltipData] = React.useState<TooltipData>({
     hasToolTip: false,
@@ -90,8 +92,6 @@ ChartProvider.defaultProps = {
   data: [],
   options: {},
   margin: defaultMargin,
-  xScaleType: 'scaleBand',
-  yScaleType: 'scaleLinear',
 }
 
 export default RoughProvider

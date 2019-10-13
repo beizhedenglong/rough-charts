@@ -15,7 +15,9 @@ export interface CircleSeriesProps<T extends object> extends BaseChartComponentP
 
 export const CircleSeries = <T extends object>(props: CircleSeriesProps<T>) => { // eslint-disable-line
   const { scaleData, data, options } = useChartContext(props, 'circleDataKeys')
-  const { xScale, yScale, xDataKey } = scaleData
+  const {
+    xScale, yScale, xDataKey,
+  } = scaleData
   const { dataKey } = props
   const { generateHandlers } = useTooltipGenerator(props as any)
   if (!xScale || !yScale || !dataKey || !xDataKey) {
@@ -40,7 +42,11 @@ export const CircleSeries = <T extends object>(props: CircleSeriesProps<T>) => {
             ...options,
           },
         }
-        const handlers = generateHandlers(data[index])
+        const item = data[index] as T
+        const handlers = generateHandlers(data[index], {
+          name: `${item[xDataKey]}`,
+          value: `${item[dataKey]}`,
+        })
         if (isFunction(children)) {
           return processTooltipHandlers(children(data[index] as T, childProps, index), handlers)
         }

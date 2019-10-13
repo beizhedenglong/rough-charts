@@ -6,6 +6,7 @@ import { BaseChartComponentProps } from '../baseTypes'
 import { isFunction } from '../utils'
 
 export interface YAxisProps extends BaseChartComponentProps {
+  dataKey?: string
   tickSize?: number
   fontSize?: number
   format?: (tick: string) => string

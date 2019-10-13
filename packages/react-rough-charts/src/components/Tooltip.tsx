@@ -7,6 +7,7 @@ import { useChartContext } from '../hooks/useChartContext'
 export interface TooltipProps extends BaseChartComponentProps {
   width?:number,
   height?: number
+  fontSize?: number
 }
 
 
@@ -17,11 +18,12 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
   const {
     x, y, showToolTip, name, value,
   } = tooltipData
-  const { width, height } = props
+  const { width, height, fontSize } = props
 
   const display = (!showToolTip) ? 'none' : 'inline-block'
   // TODO pintX pointY
   const left = contentWidth - x < width + 20 ? x - 20 - width : x + 20
+  const ellipse = (s = '') => (s.length >= 5 ? `${s.slice(0, 5)}...` : s)
   const content = (
     <div
       style={{
@@ -40,6 +42,13 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
             <Rectangle
               width={width}
               height={height}
+              onMouseOver={(e) => {
+                setTooltipData(prev => ({
+                  ...prev,
+                  x: e.clientX,
+                  y: e.clientY,
+                }))
+              }}
               onMouseMove={(e) => {
                 setTooltipData(prev => ({
                   ...prev,
@@ -56,12 +65,20 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
               options={{
                 fill: 'white',
                 fillStyle: 'solid',
+                strokeWidth: 2,
                 ...options,
               }}
             />
           </RoughProvider>
-          <text stroke="black" fill="black" x={10} y={20}>{`Name: ${name}`}</text>
-          <text stroke="black" fill="black" x={10} y={40}>{`Value: ${value}`}</text>
+          <text
+            textAnchor="middle"
+            stroke="black"
+            fill="black"
+            x={width / 2}
+            y={height / 2 + fontSize / 3}
+          >
+            {`( ${ellipse(name)}, ${ellipse(value)} )`}
+          </text>
         </g>
       </svg>
     </div>
@@ -73,7 +90,8 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
 Tooltip.displayName = 'Tooltip'
 Tooltip.defaultProps = {
   width: 120,
-  height: 50,
+  height: 40,
+  fontSize: 16,
 }
 
 export default Tooltip

@@ -8,9 +8,10 @@ export type Margin = {
   left?: number
   right?: number
 }
-export type DataKey = 'xDataKey' | 'barDataKeys' | 'lineDataKeys' | 'circleDataKeys'
+export type DataKey = 'xDataKey' | 'yDataKey' | 'barDataKeys' | 'lineDataKeys' | 'circleDataKeys'
 export interface ScaleData<T> {
   xDataKey?: string
+  yDataKey?: string
   barDataKeys: string[]
   lineDataKeys: string[]
   circleDataKeys: string[]
@@ -33,8 +34,8 @@ export interface ChartContextArgument<T = any> {
   height?: number
   options?: RoughOptions
   margin?: Margin
-  xScaleType?: ScaleType
-  yScaleType?: ScaleType
+  xScale?: any
+  yScale?: any
 }
 
 export interface ChartContextReturn<T = any> extends Required<ChartContextArgument<T>> {

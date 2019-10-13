@@ -6,9 +6,12 @@ import {
 } from '../ChartContext'
 import { isNil, removeDuplicates } from '../utils'
 
-const getDomain = (type: ScaleType, values: number[]) => (
-  type === 'scaleBand' ? values : [Math.min(...values), Math.max(...values)]
-)
+const getDomain = (type: ScaleType, values: number[]) => {
+  const min = Math.min(...values)
+  return (
+    type === 'scaleBand' ? values : [min, Math.max(...values)]
+  )
+}
 
 export function useChartContext<T extends object>(
   props: ChartContextArgument<T>,
@@ -23,7 +26,7 @@ export function useChartContext<T extends object>(
   }
   const {
     data, contentWidth, contentHeight,
-    setScaleData, xScaleType, yScaleType,
+    setScaleData,
   } = value
   const { dataKey } = props as any
   React.useEffect(() => {
@@ -33,18 +36,34 @@ export function useChartContext<T extends object>(
 
     if (scaleKeyName === 'xDataKey') {
       const values = data.map(d => d[dataKey])
-      const xScale = d3Scale[xScaleType]()
+      const xScale = value.xScale || d3Scale.scaleBand()
       xScale.range([0, contentWidth])
-      const domain = getDomain(xScaleType, values)
-      xScale.domain(domain)
+      if (xScale.domain().length < 2) {
+        const domain = getDomain('scaleBand', values)
+        xScale.domain(domain)
+      }
       setScaleData(prev => ({
         ...prev,
         [scaleKeyName]: dataKey,
         xScale,
       }))
     }
+    if ((scaleKeyName === 'yDataKey') && dataKey) {
+      const values = data.map(d => d[dataKey])
+      const yScale = value.yScale || d3Scale.scaleLinear()
+      yScale.range([0, contentHeight])
+      if (yScale.domain().length < 2) {
+        const domain = getDomain('scaleLinear', values)
+        yScale.domain(domain)
+      }
+      setScaleData(prev => ({
+        ...prev,
+        [scaleKeyName]: dataKey,
+        yScale,
+      }))
+    }
     const getSeriesScaleData = (prev: ScaleData<T>) => {
-      const { barDataKeys, lineDataKeys } = prev
+      const { barDataKeys, lineDataKeys, yDataKey } = prev
       const prevDataKeys = prev[scaleKeyName]
       const newDataKeys = prevDataKeys.indexOf(dataKey) > 0
         ? prevDataKeys
@@ -53,15 +72,21 @@ export function useChartContext<T extends object>(
         ...prev,
         [scaleKeyName]: newDataKeys,
       }
-      const values = removeDuplicates([...newDataKeys, ...lineDataKeys, ...barDataKeys])
-        .reduce((acc, groupName) => {
-          acc.push(...data.map(item => +item[groupName]))
-          return acc
-        }, [])
-      const domain = getDomain(yScaleType, values)
+      const values = yDataKey
+        ? data.map(d => d[yDataKey])
+        : removeDuplicates([...newDataKeys, ...lineDataKeys, ...barDataKeys])
+          .reduce((acc, groupName) => {
+            acc.push(...data.map(item => +item[groupName]))
+            return acc
+          }, [])
+
       // TODO xScale
-      const yScale = d3Scale[yScaleType]()
-      yScale.domain(domain)
+      let { yScale } = prev
+      if (!yScale) {
+        yScale = d3Scale.scaleLinear()
+        const domain = getDomain('scaleLinear', values)
+        yScale.domain(domain)
+      }
       yScale.range([contentHeight, 0])
       newScaleData.yScale = yScale
       return newScaleData
@@ -81,7 +106,7 @@ export function useChartContext<T extends object>(
     if ((scaleKeyName === 'lineDataKeys') || (scaleKeyName === 'circleDataKeys')) {
       setScaleData(prev => getSeriesScaleData(prev))
     }
-  }, [scaleKeyName, dataKey, xScaleType, yScaleType, contentHeight, contentWidth])
+  }, [scaleKeyName, dataKey, contentHeight, contentWidth])
   const margin = {
     ...value.margin,
   }
@@ -101,7 +126,5 @@ export function useChartContext<T extends object>(
     data: !isNil(props.data) ? props.data : value.data,
     scaleData: value.scaleData,
     setScaleData: value.setScaleData,
-    xScaleType: value.xScaleType,
-    yScaleType: value.yScaleType,
   }
 }

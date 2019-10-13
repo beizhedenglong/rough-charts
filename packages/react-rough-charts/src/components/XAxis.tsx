@@ -32,7 +32,7 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
       <Line
         x1={0}
         y1={y}
-        x2={contentWidth}
+        x2={contentWidth + bandwidth / 2}
         y2={y}
         options={{
           bowing: 0.2,
