@@ -73,23 +73,22 @@ export function useChartContext<T extends object>(
         const barScale = d3Scale
           .scaleBand()
           .domain(newScaleData[scaleKeyName])
-          .padding(0.05)
 
         newScaleData.barScale = barScale
         return newScaleData
       })
     }
-    if (scaleKeyName === 'lineDataKeys') {
+    if ((scaleKeyName === 'lineDataKeys') || (scaleKeyName === 'circleDataKeys')) {
       setScaleData(prev => getSeriesScaleData(prev))
     }
   }, [scaleKeyName, dataKey, xScaleType, yScaleType, contentHeight, contentWidth])
   const margin = {
     ...value.margin,
-    ...(props.margin || {}),
   }
-  const width = !isNil(props.width) ? props.width : value.width
-  const height = !isNil(props.height) ? props.height : value.height
+  const { width } = value
+  const { height } = value
   return {
+    ...value,
     width,
     height,
     contentWidth: width - margin.left - margin.right,

@@ -10,6 +10,7 @@ export interface Handlers {
   onClick?: (e: React.MouseEvent<SVGGElement>) => any
   onMouseOver?: (e: React.MouseEvent<SVGGElement>) => any
   onMouseOut?: (e: React.MouseEvent<SVGGElement>) => any
+  onMouseMove?: (e: React.MouseEvent<SVGGElement>) => any
 }
 export interface BaseOptions extends Handlers {
   options?: Options

@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { RoughProvider } from 'react-roughjs'
-import { ChartContext, ChartContextArgument, ScaleData } from '../ChartContext'
+import {
+  ChartContext, ChartContextArgument, ScaleData, TooltipData,
+} from '../ChartContext'
 import { isNil } from '../utils'
 
 const { Provider } = ChartContext
@@ -15,7 +17,17 @@ export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
   const [scaleData, setScaleData] = React.useState<ScaleData<any>>({
     barDataKeys: [],
     lineDataKeys: [],
+    circleDataKeys: [],
   })
+  const [tooltipData, setTooltipData] = React.useState<TooltipData>({
+    hasToolTip: false,
+    x: -1,
+    y: -1,
+    showToolTip: false,
+    name: '',
+    value: '',
+  })
+
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -34,7 +46,11 @@ export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
   const height = !isNil(props.height) ? props.height : innerHeight
   const width = !isNil(props.width) ? props.width : innerWidth
 
-  const { margin } = props
+  const { margin: propsMargin } = props
+  const margin = {
+    ...defaultMargin,
+    ...propsMargin,
+  }
   const shouldRenderChildren = () => (height && width)
   return (
     <Provider
@@ -42,14 +58,13 @@ export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
         ...props as any,
         height,
         width,
-        margin: {
-          ...defaultMargin,
-          ...margin,
-        },
+        margin,
         scaleData,
-        setScaleData: f => setScaleData(prev => f(prev)),
+        setScaleData: f => setScaleData(f),
         contentHeight: height - margin.bottom - margin.top,
         contentWidth: width - margin.left - margin.right,
+        tooltipData,
+        setTooltipData: f => setTooltipData(f),
       }}
     >
       <svg

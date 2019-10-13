@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Scale } from './baseTypes'
 
 export const isNil = x => x == null
 
@@ -10,6 +11,36 @@ export const removeDuplicates = <T extends any>(xs: T[]) => { // eslint-disable-
     res[key] = true
   })
   return Object.keys(res)
+}
+
+export const getBandWidth = (scale: Scale) => {
+  const ticks = ('ticks' in scale) ? scale.ticks() : scale.domain()
+  if (ticks.length <= 1) {
+    const [low, high] = scale.range()
+    return Math.abs(high - low)
+  }
+  return Math.abs(scale(ticks[1]) - scale(ticks[0]))
+}
+
+export const processTooltipHandlers = (
+  child, handlers: { [key: string]: (e: any) => void },
+) => {
+  if (!React.isValidElement(child)) {
+    return null
+  }
+  const additionalProps = Object.entries(handlers)
+    .reduce((acc, [handlerName, f]) => {
+      if (child.props[handlerName]) {
+        acc[handlerName] = (e) => {
+          f(e)
+          child.props[handlerName](e)
+        }
+      } else {
+        acc[handlerName] = f
+      }
+      return acc
+    }, {})
+  return React.cloneElement(child, additionalProps)
 }
 
 export const cloneElement = (

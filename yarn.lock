@@ -3503,7 +3503,7 @@ cz-conventional-changelog@3.0.2:
   optionalDependencies:
     "@commitlint/load" ">6.1.1"
 
-"d3-array@1.2.0 - 2":
+"d3-array@1.2.0 - 2", d3-array@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-2.3.2.tgz#4a943835e5f35ad00ef0a90e79d2c7a990be9d71"
   integrity sha512-cg73UOh7D7e72FQQER4l5aXnEwlizah8TIggMn8qtEO/7APe5s6bAZhlDlVw0BRml6Qi4bd44WJ5HGuiK7fRyw==

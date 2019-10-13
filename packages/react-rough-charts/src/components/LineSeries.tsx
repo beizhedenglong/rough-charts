@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react'
 import * as d3Shape from 'd3-shape'
-import { Path, Circle } from 'react-roughjs'
+import { Path } from 'react-roughjs'
 import { BaseChartComponentProps } from '../baseTypes'
 import { useChartContext } from '../hooks/useChartContext'
+import { getBandWidth } from '../utils'
 
 
 export interface LineSeriesProps<T extends object> extends BaseChartComponentProps {
@@ -18,8 +19,8 @@ export const LineSeries = <T extends object>(props: LineSeriesProps<T>) => { // 
   if (!xScale || !yScale || !dataKey || !xDataKey) {
     return null
   }
-  const ticks = ('ticks' in xScale) ? xScale.ticks() : xScale.domain()
-  const bandwidth = xScale(ticks[1]) - xScale(ticks[0])
+
+  const bandwidth = getBandWidth(xScale)
   const points: [number, number][] = data.map((item: any) => ([
     xScale(item[xDataKey]),
     yScale(item[dataKey]),
@@ -36,20 +37,6 @@ export const LineSeries = <T extends object>(props: LineSeriesProps<T>) => { // 
         d={path}
         options={options}
       />
-      {points.map(([x, y], index) => (
-        <Circle
-          transform={`translate(${bandwidth / 2}, 0)`}
-          x={x}
-          y={y}
-          key={index}
-          diameter={10}
-          options={{
-            ...options,
-            fill: options.stroke,
-            fillStyle: 'solid',
-          }}
-        />
-      ))}
     </React.Fragment>
   )
 }

@@ -3,15 +3,17 @@ import * as React from 'react'
 import { Line } from 'react-roughjs'
 import { useChartContext } from '../hooks/useChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
+import { isFunction } from '../utils'
 
 export interface YAxisProps extends BaseChartComponentProps {
   tickSize?: number
   fontSize?: number
+  format?: (tick: string) => string
 }
 
 export const YAxis: React.FC<YAxisProps> = (props) => {
   const {
-    tickSize, fontSize,
+    tickSize, fontSize, format,
   } = props
   const {
     options, contentHeight, scaleData,
@@ -56,7 +58,7 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
               fill={options.stroke}
               textAnchor="end"
             >
-              {t}
+              {isFunction(format) ? format(t) : t}
             </text>
           </React.Fragment>
         ))

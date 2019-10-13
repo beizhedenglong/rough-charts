@@ -78,9 +78,11 @@ export function useDrawEffect<T extends DrawFunction>(
   }
   const {
     transform, opacity, onClick, onMouseOut, onMouseOver,
-    cursor, strokeDasharray,
+    cursor, strokeDasharray, onMouseMove,
   } = props
-  const handlers = { onClick, onMouseOut, onMouseOver }
+  const handlers = {
+    onClick, onMouseOut, onMouseOver, onMouseMove,
+  }
   const setAttribute = (node: SVGElement, attrs: object) => {
     Object.keys(attrs).forEach((attrName) => {
       if (attrName === 'strokeDasharray') {
