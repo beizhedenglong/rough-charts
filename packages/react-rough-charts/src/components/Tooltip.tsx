@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom'
 import { RoughProvider, Rectangle } from 'react-roughjs'
 import { BaseChartComponentProps } from '../baseTypes'
 import { useChartContext } from '../hooks/useChartContext'
+import { isNil } from '../utils'
 
 export interface TooltipProps extends BaseChartComponentProps {
   width?:number,
@@ -18,19 +19,29 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
   const {
     x, y, showToolTip, name, value,
   } = tooltipData
-  const { width, height, fontSize } = props
-
-  const display = (!showToolTip) ? 'none' : 'inline-block'
+  const { width: propsWidth, height, fontSize } = props
+  const [internalWidth, setWidth] = React.useState(120)
+  const textRef = React.useRef<SVGTextElement>()
+  const width = isNil(propsWidth) ? internalWidth : propsWidth
+  React.useEffect(() => {
+    const node = textRef.current
+    if (node) {
+      const { width: textWidth } = node.getBBox()
+      setWidth(textWidth + 30)
+    }
+  }, [textRef.current])
+  if (!showToolTip) {
+    return null
+  }
   // TODO pintX pointY
   const left = contentWidth - x < width + 20 ? x - 20 - width : x + 20
-  const ellipse = (s = '') => (s.length >= 5 ? `${s.slice(0, 5)}...` : s)
+  const ellipse = (s = '', length) => (s.length > length ? `${s.slice(0, length)}...` : s)
   const content = (
     <div
       style={{
         position: 'absolute',
         left,
         top: y - height / 2,
-        display,
       }}
     >
       <svg
@@ -71,13 +82,14 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
             />
           </RoughProvider>
           <text
+            ref={textRef}
             textAnchor="middle"
             stroke="black"
             fill="black"
             x={width / 2}
             y={height / 2 + fontSize / 3}
           >
-            {`( ${ellipse(name)}, ${ellipse(value)} )`}
+            {`${ellipse(name, 20)}: ${ellipse(value, 5)}`}
           </text>
         </g>
       </svg>
@@ -89,7 +101,6 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
 
 Tooltip.displayName = 'Tooltip'
 Tooltip.defaultProps = {
-  width: 120,
   height: 40,
   fontSize: 16,
 }

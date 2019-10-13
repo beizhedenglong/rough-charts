@@ -22,7 +22,7 @@ export function useChartContext<T extends object>(
   } {
   const value = React.useContext<ChartContextReturn<T>>(ChartContext)
   if (value === null) {
-    throw Error('General Components must be wrapped in Chart Component!')
+    throw Error('Chart Components must be wrapped inside <ChartProvider>!')
   }
   const {
     data, contentWidth, contentHeight,

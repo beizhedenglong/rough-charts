@@ -44,7 +44,7 @@ export const CircleSeries = <T extends object>(props: CircleSeriesProps<T>) => {
         }
         const item = data[index] as T
         const handlers = generateHandlers(data[index], {
-          name: `${item[xDataKey]}`,
+          name: `${dataKey} ${item[xDataKey]}`,
           value: `${item[dataKey]}`,
         })
         if (isFunction(children)) {

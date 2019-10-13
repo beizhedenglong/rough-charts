@@ -9,7 +9,7 @@ import { loopHandlers } from './utils'
 
 export type DrawFunction = 'line' | 'rectangle' | 'ellipse' | 'circle' | 'linearPath' | 'polygon' | 'arc' | 'curve' | 'path'
 
-const createSvgNode = (tagName: string, attributes: any) => {
+const createSvgNode = (tagName: string, attributes: any): SVGGElement => {
   const common = {
     opacity: '0',
     fill: 'black',
@@ -44,13 +44,15 @@ const createSvgNode = (tagName: string, attributes: any) => {
   Object.keys(attrs).forEach((attrName) => {
     node.setAttribute(attrName, attrs[attrName])
   })
-  return node
+  return node as any
 }
 export function useDrawEffect<T extends DrawFunction>(
   drawFnName: T, deps: Parameters<RoughSVG[T]>, props: BaseOptions = {},
 ) {
   const value = React.useContext(Context)
   const nodeRef = React.useRef<SVGGElement>(null)
+  const fakeNodeRef = React.useRef<SVGGElement>(null)
+
   if (!value) {
     throw Error('Wrap Component inside <RoughProvider>')
   }
@@ -64,13 +66,13 @@ export function useDrawEffect<T extends DrawFunction>(
           height: deps[3],
         })
       case 'path':
-        const pathOptions = deps[1] as RoughOptions
+        const pathOptions = (deps[1] || {}) as RoughOptions
         return createSvgNode('path', {
           d: deps[0],
           fill: pathOptions.fill ? 'black' : 'none',
         })
       default:
-        const options = deps[deps.length - 1]
+        const options = (deps[deps.length - 1] || {})
         const newOptions: RoughOptions = {
           ...(options as any),
           fill: 'black',
@@ -78,7 +80,7 @@ export function useDrawEffect<T extends DrawFunction>(
         }
         const args = [...deps.slice(0, deps.length - 1), newOptions]
         const node = (value.rough[drawFnName as any](...args as any) as SVGGElement)
-        node.setAttribute('opacity', '0')
+        // node.setAttribute('opacity', '0')
         return node
     }
   }
@@ -89,7 +91,7 @@ export function useDrawEffect<T extends DrawFunction>(
   const handlers = {
     onClick, onMouseOut, onMouseOver, onMouseMove,
   }
-  const setAttribute = (node: SVGElement, attrs: object) => {
+  const setAttribute = (node: SVGGElement, attrs: object) => {
     Object.keys(attrs).forEach((attrName) => {
       if (attrName === 'strokeDasharray') {
         node.setAttribute('stroke-dasharray', attrs[attrName])
@@ -111,12 +113,18 @@ export function useDrawEffect<T extends DrawFunction>(
         strokeDasharray,
       })
     }
-  }, [transform, opacity, cursor])
+    if (fakeNodeRef.current) {
+      setAttribute(fakeNodeRef.current, {
+        transform,
+      })
+    }
+  }, [transform, opacity, cursor, strokeDasharray])
   useShallowEqual(() => {
     if (value.root) {
       const node = (value.rough[drawFnName as any](...deps as any) as SVGGElement)
       nodeRef.current = node
       const fakeNode = creteFakeNode()
+      fakeNodeRef.current = fakeNode
       setAttribute(node, {
         transform,
         opacity,
@@ -139,6 +147,7 @@ export function useDrawEffect<T extends DrawFunction>(
         nodeRef.current = null
         value.root.removeChild(node)
         if (fakeNode) {
+          fakeNodeRef.current = null
           loopHandlers(fakeNode, 'removeEventListener', handlers)
           value.root.removeChild(fakeNode)
         } else {
