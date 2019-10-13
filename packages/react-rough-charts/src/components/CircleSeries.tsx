@@ -3,7 +3,8 @@ import * as React from 'react'
 import { Circle, CircleProps } from 'react-roughjs'
 import { BaseChartComponentProps } from '../baseTypes'
 import { useChartContext } from '../hooks/useChartContext'
-import { getBandWidth, isFunction } from '../utils'
+import { getBandWidth, isFunction, processTooltipHandlers } from '../utils'
+import { useTooltipGenerator } from '../hooks/useTooltipGenerator'
 
 
 export interface CircleSeriesProps<T extends object> extends BaseChartComponentProps {
@@ -16,6 +17,7 @@ export const CircleSeries = <T extends object>(props: CircleSeriesProps<T>) => {
   const { scaleData, data, options } = useChartContext(props, 'circleDataKeys')
   const { xScale, yScale, xDataKey } = scaleData
   const { dataKey } = props
+  const { generateHandlers } = useTooltipGenerator(props as any)
   if (!xScale || !yScale || !dataKey || !xDataKey) {
     return null
   }
@@ -38,13 +40,15 @@ export const CircleSeries = <T extends object>(props: CircleSeriesProps<T>) => {
             ...options,
           },
         }
+        const handlers = generateHandlers(data[index])
         if (isFunction(children)) {
-          return children(data[index] as T, childProps, index)
+          return processTooltipHandlers(children(data[index] as T, childProps, index), handlers)
         }
         return (
           <Circle
             key={index}
             {...childProps}
+            {...handlers}
           />
         )
       })}

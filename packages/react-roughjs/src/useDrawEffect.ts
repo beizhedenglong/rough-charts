@@ -63,9 +63,6 @@ export function useDrawEffect<T extends DrawFunction>(
           width: deps[2],
           height: deps[3],
         })
-      case 'arc':
-        // TODO
-        return null
       case 'path':
         const pathOptions = deps[1] as RoughOptions
         return createSvgNode('path', {
@@ -73,7 +70,16 @@ export function useDrawEffect<T extends DrawFunction>(
           fill: pathOptions.fill ? 'black' : 'none',
         })
       default:
-        return null
+        const options = deps[deps.length - 1]
+        const newOptions: RoughOptions = {
+          ...(options as any),
+          fill: 'black',
+          fillStyle: 'solid',
+        }
+        const args = [...deps.slice(0, deps.length - 1), newOptions]
+        const node = (value.rough[drawFnName as any](...args as any) as SVGGElement)
+        node.setAttribute('opacity', '0')
+        return node
     }
   }
   const {

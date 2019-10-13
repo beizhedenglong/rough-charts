@@ -1,7 +1,36 @@
 import { useChartContext } from './useChartContext'
 
+// https://stackoverflow.com/questions/6307307/click-mouse-position-with-scroll-in-javascript
+
+const mousePositions = (event) => {
+  const IE = !!document.all
+  let x
+  let y
+
+  if (IE) {
+    x = event.clientX + document.body.scrollLeft
+    y = event.clientY + document.body.scrollTop
+  } else {
+    x = (window.Event)
+      ? event.pageX
+      : event.clientX + (
+        document.documentElement.scrollLeft
+          ? document.documentElement.scrollLeft
+          : document.body.scrollLeft
+      )
+    y = (window.Event)
+      ? event.pageY
+      : event.clientY + (
+        document.documentElement.scrollTop
+          ? document.documentElement.scrollTop
+          : document.body.scrollTop
+      )
+  }
+  return { x, y }
+}
 export const useTooltipGenerator = (props: {
   dataKey: string
+  [key: string]: any
 }) => {
   const { dataKey } = props
   if (!dataKey) {
@@ -9,20 +38,24 @@ export const useTooltipGenerator = (props: {
   }
   const { setTooltipData } = useChartContext(props as any)
   const generateHandlers = item => ({
-    onMouseOver: e => setTooltipData(prev => ({
-      ...prev,
-      showToolTip: true,
-      x: e.clientX,
-      y: e.clientY,
-      name: dataKey,
-      value: item[dataKey],
-    })),
-    onMouseMove: (e) => {
+    onMouseOver: (e) => {
+      const { x, y } = mousePositions(e)
       setTooltipData(prev => ({
         ...prev,
         showToolTip: true,
-        x: e.clientX,
-        y: e.clientY,
+        x,
+        y,
+        name: dataKey,
+        value: item[dataKey],
+      }))
+    },
+    onMouseMove: (e) => {
+      const { x, y } = mousePositions(e)
+      setTooltipData(prev => ({
+        ...prev,
+        showToolTip: true,
+        x,
+        y,
       }))
     },
     onMouseOut: () => {
