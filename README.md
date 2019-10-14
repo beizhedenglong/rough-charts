@@ -2,7 +2,7 @@
 **A responsive, composable react charting chart library with a hand-drawn style.**
 [**`See Examples From StoryBooks.`**](https://beizhedenglong.github.io/rough-charts/?path=/docs/roughcharts--page)
 
-## OverView
+## Overview
 <div align="center">
   <image src="./img/screenshot2.png" height="500">
   <image src="./img/screenshot1.png" height="500">
