@@ -8,6 +8,7 @@ import { useTooltipGenerator } from '../hooks/useTooltipGenerator'
 
 export interface BarSeriesProps<T extends object> extends BaseChartComponentProps {
   dataKey: string,
+  /** Use for handling event and rendering customized shapes/styles */
   children?: (item: T, props: RectangleProps, index: number) => JSX.Element
 }
 
@@ -46,7 +47,10 @@ export const BarSeries  = <T extends object>(props: BarSeriesProps<T>) => { // e
       y,
       width: barScale.bandwidth(),
       height,
-      options,
+      options: {
+        fill: 'black',
+        ...options,
+      },
     }
   }
   const { children } = props

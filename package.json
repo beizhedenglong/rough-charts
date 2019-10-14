@@ -8,9 +8,11 @@
     "packages/*"
   ],
   "scripts": {
-    "release": "lerna run build && lerna publish"
+    "release": "lerna run build && lerna publish",
+    "deploy-storybook": "leran run build && learn run deploy-storybook"
   },
   "devDependencies": {
+    "@storybook/cli": "^5.2.3",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "3.0.2",
     "husky": "^3.0.8",
@@ -27,5 +29,6 @@
     "hooks": {
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
     }
-  }
+  },
+  "dependencies": {}
 }

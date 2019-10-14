@@ -11,14 +11,14 @@ const mousePositions = (event) => {
     x = event.clientX + document.body.scrollLeft
     y = event.clientY + document.body.scrollTop
   } else {
-    x = (window.Event)
+    x = ((window as any).Event)
       ? event.pageX
       : event.clientX + (
         document.documentElement.scrollLeft
           ? document.documentElement.scrollLeft
           : document.body.scrollLeft
       )
-    y = (window.Event)
+    y = ((window as any).Event)
       ? event.pageY
       : event.clientY + (
         document.documentElement.scrollTop

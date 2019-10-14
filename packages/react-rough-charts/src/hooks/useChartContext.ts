@@ -9,7 +9,7 @@ import { isNil, removeDuplicates } from '../utils'
 const getDomain = (type: ScaleType, values: number[]) => {
   const min = Math.min(...values)
   return (
-    type === 'scaleBand' ? values : [min, Math.max(...values)]
+    type === 'scaleBand' ? values : [min > 0 ? 0 : min, Math.max(...values)]
   )
 }
 
@@ -83,7 +83,7 @@ export function useChartContext<T extends object>(
       const {
         barDataKeys, lineDataKeys, yDataKey, circleDataKeys,
       } = prev
-      const prevDataKeys = prev[scaleKeyName]
+      const prevDataKeys = prev[scaleKeyName] as string[]
       const newDataKeys = prevDataKeys.indexOf(dataKey) > -1
         ? prevDataKeys
         : [...prevDataKeys, dataKey]

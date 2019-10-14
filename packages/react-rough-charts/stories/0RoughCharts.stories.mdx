@@ -1,17 +1,30 @@
+import GithubCorner from 'react-github-corner'
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import { colors } from "./colors"
+import { Basic, WithCustomizedShape} from "./BarSeries.stories"
+import OverView from "./Overview"
+
+<Meta title="RoughCharts" />
+
+
 # Rough Charts
 **A responsive, composable react charting chart library with a hand-drawn style.**
-[**`See Examples From StoryBooks.`**](https://beizhedenglong.github.io/rough-charts/?path=/docs/roughcharts--page)
+[**`See Examples From StoryBooks.`**](https://beizhedenglong.github.io/rough-charts)
 
 ## OverView
-<div align="center">
-  <image src="./img/screenshot2.png" height="500">
-  <image src="./img/screenshot1.png" height="500">
+
+<div> 
+  <OverView />
+  <GithubCorner 
+    href="https://github.com/beizhedenglong/rough-charts" 
+    bannerColor={colors[0]}
+  />
 </div>
 
 ## Features
 
 - **It's responsive.**
-- **It's flexible and easy to compose.** You can compose all available ChartSeries Components and render any shapes you like.
+- **It's flexible and easy to compose.** `You can compose all available ChartSeries Components and render any shapes you like.`
 - **It's lovely.**
 - **It's written in TypeScript.**
 
@@ -72,7 +85,7 @@ const App = props => (
 ```
 
 ## Fonts
-Add your favorite hand-down style fonts:
+**Add your favorite hand-down style fonts:**
 
 ```html
 <link href="https://fonts.googleapis.com/css?family=Patrick+Hand&display=swap" rel="stylesheet">
@@ -85,4 +98,4 @@ Add your favorite hand-down style fonts:
 ```
 
 ## Credits
-This project was built on top of [`d3`](https://github.com/d3) and [`roughjs`](https://github.com/pshihn/rough).
+**This project was built on top of [`d3`](https://github.com/d3) and [`roughjs`](https://github.com/pshihn/rough).**

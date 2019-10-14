@@ -13,7 +13,7 @@ export interface Handlers {
   onMouseMove?: (e: React.MouseEvent<SVGGElement>) => any
 }
 export interface BaseOptions extends Handlers {
-  options?: Options
+  options?: RoughOptions
   transform?: string,
   opacity?: number,
   cursor?: string

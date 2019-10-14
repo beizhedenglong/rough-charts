@@ -19,6 +19,7 @@ export interface ArcSeriesProps<T> extends BaseChartComponentProps {
   cy?: number
   padAngle?: number
   startAngle?: number
+  /** Default is Math.PI * 2 */
   endAngle?: number
   children?: (item: T, props: ArcProps, index: number) => React.ReactNode
 }

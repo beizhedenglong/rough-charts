@@ -80,7 +80,7 @@ export function useDrawEffect<T extends DrawFunction>(
         }
         const args = [...deps.slice(0, deps.length - 1), newOptions]
         const node = (value.rough[drawFnName as any](...args as any) as SVGGElement)
-        // node.setAttribute('opacity', '0')
+        node.setAttribute('opacity', '0')
         return node
     }
   }

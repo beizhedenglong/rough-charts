@@ -34,8 +34,7 @@ export const CircleSeries = <T extends object>(props: CircleSeriesProps<T>) => {
     <React.Fragment>
       {points.map(([x, y], index) => {
         const childProps: CircleProps = {
-          transform: `translate(${bandwidth / 2}, 0)`,
-          x,
+          x: x + bandwidth / 2,
           y,
           diameter: 10,
           options: {
