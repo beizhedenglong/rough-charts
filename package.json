@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "release": "lerna run build && lerna publish",
-    "deploy-storybook": "leran run build && learn run deploy-storybook"
+    "deploy-storybook": "lerna run build && lerna run deploy-storybook"
   },
   "devDependencies": {
     "@storybook/cli": "^5.2.3",
