@@ -14,6 +14,9 @@ export interface XAxisProps extends BaseChartComponentProps {
 }
 
 export const XAxis: React.FC<XAxisProps> = (props) => {
+  if (!props.dataKey) {
+    throw Error('dataKey of XAxisProps is required')
+  }
   const {
     options, contentHeight, contentWidth, scaleData,
   } = useChartContext(props, 'xDataKey')

@@ -19,7 +19,7 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
   } = props
   const {
     options, contentHeight, scaleData,
-  } = useChartContext(props)
+  } = useChartContext(props, 'yDataKey')
   const { yScale: scale } = scaleData
   if (!scale) {
     return null
