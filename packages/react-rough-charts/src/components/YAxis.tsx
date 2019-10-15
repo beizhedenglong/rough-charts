@@ -8,13 +8,14 @@ import { isFunction } from '../utils'
 export interface YAxisProps extends BaseChartComponentProps {
   dataKey?: string
   tickSize?: number
+  tickCount?: number
   fontSize?: number
   format?: (tick: string) => string
 }
 
 export const YAxis: React.FC<YAxisProps> = (props) => {
   const {
-    tickSize, fontSize, format,
+    tickSize, fontSize, format, tickCount,
   } = props
   const {
     options, contentHeight, scaleData,
@@ -24,7 +25,7 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
     return null
   }
 
-  const ticks = (scale as any).ticks ? (scale as any).ticks() : scale.domain()
+  const ticks = (scale as any).ticks ? (scale as any).ticks(tickCount) : scale.domain()
   return (
     <React.Fragment>
       <Line
@@ -59,7 +60,7 @@ export const YAxis: React.FC<YAxisProps> = (props) => {
               fill={options.stroke}
               textAnchor="end"
             >
-              {isFunction(format) ? format(t) : t}
+              {isFunction(format) ? format(t) : String(t)}
             </text>
           </React.Fragment>
         ))
@@ -72,6 +73,7 @@ YAxis.displayName = 'YAxis'
 YAxis.defaultProps = {
   tickSize: 10,
   fontSize: 16,
+  tickCount: 10,
 }
 
 export default YAxis

@@ -50,6 +50,7 @@ export const useTooltipGenerator = (props: {
         y,
         name: content.name,
         value: content.value,
+        activeItem: item,
       }))
     },
     onMouseMove: (e) => {
@@ -59,6 +60,7 @@ export const useTooltipGenerator = (props: {
         showToolTip: true,
         x,
         y,
+        activeItem: item,
       }))
     },
     onMouseOut: () => {

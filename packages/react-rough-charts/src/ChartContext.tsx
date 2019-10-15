@@ -23,22 +23,32 @@ export interface ScaleData<T> {
   userYScale?: any
   barScale?: ScaleBand<any>
 }
-export interface TooltipData {
+export interface TooltipData<T = any> {
   hasToolTip: boolean
   showToolTip: boolean
   x: number
   y: number
   name: string,
-  value: string
+  value: string,
+  activeItem: T
 }
 export type ScaleType = 'scaleLinear' | 'scaleBand'
+
 export interface ChartContextArgument<T = any> {
   data?: T[]
+  /** If it doesn't set, it will keep the same with parent width */
   width?: number
+  /** if it doesn't set, it will keep the same with parent height */
   height?: number
   options?: RoughOptions
   margin?: Margin
+  /**
+   * If it doesn't set, it will be d3.scaleBand().
+   * Passing a customized scale to override the default behavior. */
   xScale?: any
+  /**
+  * If it doesn't set, it will be d3.scaleLiner().
+  * Passing a customized scale to override the default behavior. */
   yScale?: any
 }
 
@@ -47,8 +57,8 @@ export interface ChartContextReturn<T = any> extends Required<ChartContextArgume
   contentWidth: number,
   scaleData: ScaleData<T>
   setScaleData: (f: (scaleData: ScaleData<T>) => ScaleData<T>) => void
-  tooltipData: TooltipData
-  setTooltipData: (f: (data: TooltipData) => TooltipData) => void
+  tooltipData: TooltipData<T>
+  setTooltipData: (f: (data: TooltipData<T>) => TooltipData<T>) => void
 }
 
 

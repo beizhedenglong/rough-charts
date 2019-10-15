@@ -10,6 +10,7 @@ export interface XAxisProps extends BaseChartComponentProps {
   tickSize?: number
   fontSize?: number
   format?: (tick: string) => string
+  tickCount?: number
 }
 
 export const XAxis: React.FC<XAxisProps> = (props) => {
@@ -18,13 +19,13 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
   } = useChartContext(props, 'xDataKey')
   const { xScale } = scaleData
   const {
-    tickSize, fontSize, format,
+    tickSize, fontSize, format, tickCount,
   } = props
   if (!xScale) {
     return null
   }
 
-  const ticks = ('ticks' in xScale) ? xScale.ticks() : xScale.domain()
+  const ticks = ('ticks' in xScale) ? xScale.ticks(tickCount) : xScale.domain()
   const bandwidth = getBandWidth(xScale)
   const y = contentHeight
   return (
@@ -61,7 +62,7 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
               fill={options.stroke}
               textAnchor="middle"
             >
-              {isFunction(format) ? format(t) : t}
+              {isFunction(format) ? format(t) : String(t)}
             </text>
           </React.Fragment>
         ))
@@ -74,6 +75,7 @@ XAxis.displayName = 'XAxis'
 XAxis.defaultProps = {
   tickSize: 10,
   fontSize: 16,
+  tickCount: 10,
 }
 
 export default XAxis

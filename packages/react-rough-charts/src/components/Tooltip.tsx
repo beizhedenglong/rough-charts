@@ -3,12 +3,14 @@ import * as ReactDOM from 'react-dom'
 import { RoughProvider, Rectangle } from 'react-roughjs'
 import { BaseChartComponentProps } from '../baseTypes'
 import { useChartContext } from '../hooks/useChartContext'
-import { isNil } from '../utils'
+import { isNil, isFunction } from '../utils'
 
-export interface TooltipProps extends BaseChartComponentProps {
+export interface TooltipProps<T=any> extends Omit<BaseChartComponentProps, 'data'>{
   width?:number,
   height?: number
-  fontSize?: number
+  fontSize?: number,
+  /** Use for rendering customized content */
+  children?: (activeItem: T) => React.ReactNode
 }
 
 
@@ -17,9 +19,11 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
     tooltipData, setTooltipData, contentWidth, options,
   } = useChartContext(props)
   const {
-    x, y, showToolTip, name, value,
+    x, y, showToolTip, name, value, activeItem,
   } = tooltipData
-  const { width: propsWidth, height, fontSize } = props
+  const {
+    width: propsWidth, height, fontSize, children,
+  } = props
   const [internalWidth, setWidth] = React.useState(120)
   const textRef = React.useRef<SVGTextElement>()
   const width = isNil(propsWidth) ? internalWidth : propsWidth
@@ -30,12 +34,32 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
       setWidth(textWidth + 30)
     }
   }, [textRef.current])
-  if (!showToolTip) {
+  if (!showToolTip || !activeItem) {
     return null
   }
   // TODO pintX pointY
   const left = contentWidth - x < width + 20 ? x - 20 - width : x + 20
   const ellipse = (s = '', length) => (s.length > length ? `${s.slice(0, length)}...` : s)
+  const renderChildren = () => {
+    const text = (s: string) => (
+      <text
+        ref={textRef}
+        textAnchor="middle"
+        stroke="black"
+        fill="black"
+        x={width / 2}
+        y={height / 2 + fontSize / 3}
+      >
+        {s}
+      </text>
+    )
+
+    if (isFunction(children)) {
+      const content = children(activeItem)
+      return typeof content === 'string' ? text(content) : content
+    }
+    return text(`${ellipse(name, 20)}: ${ellipse(value, 5)}`)
+  }
   const content = (
     <div
       style={{
@@ -81,16 +105,9 @@ export const Tooltip: React.FC<TooltipProps> = (props) => {
               }}
             />
           </RoughProvider>
-          <text
-            ref={textRef}
-            textAnchor="middle"
-            stroke="black"
-            fill="black"
-            x={width / 2}
-            y={height / 2 + fontSize / 3}
-          >
-            {`${ellipse(name, 20)}: ${ellipse(value, 5)}`}
-          </text>
+          <RoughProvider>
+            {renderChildren()}
+          </RoughProvider>
         </g>
       </svg>
     </div>

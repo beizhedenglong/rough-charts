@@ -15,10 +15,12 @@
     "@storybook/cli": "^5.2.3",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "3.0.2",
+    "eslint": "^6.5.1",
+    "eslint-plugin-zero": "^0.0.9",
     "husky": "^3.0.8",
     "lerna": "^3.16.4",
     "parcel-bundler": "^1.12.3",
-    "typescript": "3.5.2"
+    "typescript": "^3.6.4"
   },
   "config": {
     "commitizen": {

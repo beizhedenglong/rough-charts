@@ -11,7 +11,10 @@ const defaultMargin = {
   top: 10, right: 10, bottom: 70, left: 60,
 }
 
-export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
+export interface ChartProviderProps extends ChartContextArgument {
+}
+
+export const ChartProvider: React.FC<ChartProviderProps> = (props) => {
   const [innerHeight, setInnerHeight] = React.useState(0)
   const [innerWidth, setInnerWidth] = React.useState(0)
   const ref = React.useRef<SVGSVGElement>()
@@ -35,6 +38,7 @@ export const ChartProvider: React.FC<ChartContextArgument> = (props) => {
     showToolTip: false,
     name: '',
     value: '',
+    activeItem: null,
   })
 
 
