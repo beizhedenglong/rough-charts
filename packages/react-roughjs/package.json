@@ -1,6 +1,6 @@
 {
   "name": "react-roughjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "source": "src/index.tsx",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
