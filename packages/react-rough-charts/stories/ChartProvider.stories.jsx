@@ -40,7 +40,7 @@ export const WithCustomizedScale = (props) => {
     .scaleLinear()
     .domain([20, 40])
 
-  const dateString = (d: Date) => `${d.getMonth() + 1}-${d.getDate()}`
+  const dateString = (d: Date) => `${d.getMonth()}-${d.getDate()}`
 
   return (
     <ChartProvider
