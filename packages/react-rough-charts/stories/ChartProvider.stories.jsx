@@ -24,14 +24,17 @@ export const WithCustomizedScale = (props) => {
     { date: '2019-10-8', temperature: 25 },
     { date: '2019-10-9', temperature: 35 },
   ]
-  const newData = data.map(({ date, temperature }) => ({
-    date: new Date(date),
-    temperature,
-  }))
+  const newData = data.map(({ date, temperature }) => {
+    const [year, month, day] = date.split('-')
+    return ({
+      date: new Date(+year, +month, +day),
+      temperature,
+    })
+  })
 
   const xScale = d3Scale
     .scaleTime()
-    .domain([new Date('2019-10-1'), new Date('2019-10-10')])
+    .domain([new Date(2019, 10, 1), new Date(2019, 10, 10)])
 
   const yScale = d3Scale
     .scaleLinear()
@@ -61,7 +64,6 @@ export const WithCustomizedScale = (props) => {
         dataKey="temperature"
         options={{ stroke: colors[0] }}
       />
-
       <Tooltip>
         {activeItem => `${dateString(activeItem.date)}: ${activeItem.temperature} °C`}
       </Tooltip>
