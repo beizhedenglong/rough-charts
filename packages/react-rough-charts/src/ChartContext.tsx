@@ -24,7 +24,6 @@ export interface ScaleData<T> {
   barScale?: ScaleBand<any>
 }
 export interface TooltipData<T = any> {
-  hasToolTip: boolean
   showToolTip: boolean
   x: number
   y: number

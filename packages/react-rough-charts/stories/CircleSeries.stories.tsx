@@ -13,7 +13,6 @@ export default {
 }
 
 const data = [
-  { height: 90, weight: 40 },
   { height: 150, weight: 153 },
   { height: 151, weight: 116 },
   { height: 150, weight: 120 },
@@ -30,10 +29,7 @@ const data = [
 
 export const Basic = props => (
   <ChartProvider
-    margin={{
-      right: 100,
-    }}
-    xScale={d3Scale.scaleLinear().domain([90, 200])}
+    xScale={d3Scale.scaleLinear().domain([120, 200])}
     data={data}
     height={400}
     {...props}

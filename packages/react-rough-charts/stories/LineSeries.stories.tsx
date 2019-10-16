@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Rectangle } from 'react-roughjs'
+import * as d3Shape from 'd3-shape'
 import {
   LineSeries, Tooltip,
   ChartProvider, XAxis, YAxis,
@@ -88,3 +89,33 @@ export const WithCustomizedShape = props => (
     <Tooltip />
   </ChartProvider>
 )
+
+export const WithCustomizedCurve = (props) => {
+  const c1 = d3Shape.curveCatmullRom.alpha(1)
+  return (
+    <ChartProvider
+      height={400}
+      data={data}
+      {...props}
+    >
+      <XAxis dataKey="name" />
+      <YAxis />
+      <LineSeries
+        dataKey="value1"
+        curve={c1}
+        options={{
+          stroke: colors[0],
+          strokeWidth: 2,
+        }}
+      />
+      <LineSeries
+        dataKey="value1"
+        options={{
+          stroke: colors[3],
+          strokeWidth: 2,
+        }}
+      />
+      <Tooltip />
+    </ChartProvider>
+  )
+}

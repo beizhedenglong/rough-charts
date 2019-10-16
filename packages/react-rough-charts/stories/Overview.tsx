@@ -16,24 +16,29 @@ import {
 } from './LineSeries.stories'
 import { Basic as ComposeBasic } from './ComposeSeries.stories'
 
-const props = { width: 400, height: 400 }
+interface ContainerProps {
+  left?: React.ReactNode
+  right?: React.ReactNode
+}
+
+const Container:React.FC<ContainerProps> = ({ left, right, children }) => (
+  <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%' }}>
+    <div style={{ width: '50%', minWidth: 350 }}>{left}</div>
+    <div style={{ width: '50%', minWidth: 350 }}>{right}</div>
+    <div style={{ width: '100%', minWidth: 350 }}>{children}</div>
+  </div>
+)
 const Overview = () => (
-  <div
-    style={{ display: 'flex', flexWrap: 'wrap' }}
-  >
-    <WithEventHandler {...props} />
-    <Basic {...props} />
-    <ComposeBasic {...props} />
-    <WithCustomizedShape {...props} />
-    <TwoLevel {...props} />
-    <ArcWithCustomizedShape {...props} />
-    <LineBasic {...props} />
-    <LineWithCustomizedShape {...props} />
-    <CircleBasic
-      {...props}
-      width={1000}
-      margin={{ right: 200, top: 30 }}
-    />
+  <div>
+    <Container left={<WithEventHandler />} right={<Basic />} />
+    <Container left={<ComposeBasic />} right={<WithCustomizedShape />} />
+    <Container left={<TwoLevel />} right={<ArcWithCustomizedShape />} />
+    <Container left={<LineBasic />} right={<LineWithCustomizedShape />} />
+    <Container>
+      <CircleBasic
+        margin={{ top: 60 }}
+      />
+    </Container>
   </div>
 )
 

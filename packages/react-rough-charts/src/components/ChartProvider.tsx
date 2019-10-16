@@ -8,7 +8,7 @@ import { isNil } from '../utils'
 
 const { Provider } = ChartContext
 const defaultMargin = {
-  top: 10, right: 10, bottom: 70, left: 60,
+  top: 10, right: 10, bottom: 50, left: 50,
 }
 
 export interface ChartProviderProps extends ChartContextArgument {
@@ -32,7 +32,6 @@ export const ChartProvider: React.FC<ChartProviderProps> = (props) => {
     internalYScale,
   })
   const [tooltipData, setTooltipData] = React.useState<TooltipData>({
-    hasToolTip: false,
     x: -1,
     y: -1,
     showToolTip: false,

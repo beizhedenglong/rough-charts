@@ -27,7 +27,7 @@ export const Basic = props => (
   <ChartProvider
     height={400}
     data={data}
-    margin={{ top: 30 }}
+    margin={{ top: 30, left: 0 }}
     {...props}
   >
     <ArcSeries
@@ -43,7 +43,7 @@ export const TwoLevel = props => (
   <ChartProvider
     height={400}
     data={data}
-    margin={{ top: 30 }}
+    margin={{ top: 30, left: 0 }}
     {...props}
   >
     <ArcSeries
@@ -78,7 +78,7 @@ export const WithCustomizedShape = props => (
   <ChartProvider
     height={400}
     data={data}
-    margin={{ top: 30 }}
+    margin={{ top: 30, left: 0 }}
     {...props}
   >
     <ArcSeries
@@ -92,7 +92,11 @@ export const WithCustomizedShape = props => (
             options={{
               fill: colors[index % colors.length],
             }}
-            outerRadius={itemProps.outerRadius * 0.3 + index * itemProps.outerRadius * 0.1}
+            outerRadius={
+              itemProps.outerRadius * 0.3
+              + (index / data.length)
+              * itemProps.outerRadius * 0.7
+            }
           />
         )
       }
