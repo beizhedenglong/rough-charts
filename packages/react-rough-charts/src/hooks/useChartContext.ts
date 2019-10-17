@@ -81,7 +81,7 @@ export function useChartContext<T extends object>(
     }
     const getSeriesScaleData = (prev: ScaleData<T>) => {
       const {
-        barDataKeys, lineDataKeys, yDataKey, circleDataKeys,
+        yDataKey,
       } = prev
       const prevDataKeys = prev[scaleKeyName] as string[]
       const newDataKeys = prevDataKeys.indexOf(dataKey) > -1
@@ -91,19 +91,31 @@ export function useChartContext<T extends object>(
         ...prev,
         [scaleKeyName]: newDataKeys,
       }
-      const values = yDataKey
-        ? data.map(d => d[yDataKey])
-        : removeDuplicates([...newDataKeys, ...lineDataKeys, ...barDataKeys, ...circleDataKeys])
-          .reduce((acc, groupName) => {
-            acc.push(...data.map(item => +item[groupName]))
-            return acc
-          }, [])
+      const {
+        barDataKeys, lineDataKeys, circleDataKeys, areaDataKeys,
+      } = newScaleData
 
       // TODO xScale
       if (userYScale) {
         userYScale.range([contentHeight, 0])
         newScaleData.yScale = userYScale
       } else {
+        const noneStackedValues = removeDuplicates(
+          [...lineDataKeys, ...barDataKeys, ...circleDataKeys],
+        ).reduce((acc, groupName) => {
+          acc.push(...data.map(item => +item[groupName]))
+          return acc
+        }, [])
+
+        const areaValues = data.map(
+          d => areaDataKeys.reduce((sum, key) => sum + (d[key] as any), 0),
+        )
+
+
+        const values = yDataKey
+          ? data.map(d => d[yDataKey])
+          : [...noneStackedValues, ...areaValues]
+
         const domain = getDomain('scaleLinear', values)
         internalYScale.domain(domain)
         internalYScale.range([contentHeight, 0])
@@ -118,13 +130,17 @@ export function useChartContext<T extends object>(
 
         const barScale = d3Scale
           .scaleBand()
-          .domain(newScaleData[scaleKeyName])
+          .domain(newScaleData[scaleKeyName] as string[])
 
         newScaleData.barScale = barScale
         return newScaleData
       })
     }
-    if ((scaleKeyName === 'lineDataKeys') || (scaleKeyName === 'circleDataKeys')) {
+    if (
+      (scaleKeyName === 'lineDataKeys')
+      || (scaleKeyName === 'circleDataKeys')
+      || (scaleKeyName === 'areaDataKeys')
+    ) {
       setScaleData(prev => getSeriesScaleData(prev))
     }
   }, [scaleKeyName, dataKey, contentHeight, contentWidth])

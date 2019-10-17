@@ -15,6 +15,7 @@ import {
   WithCustomizedShape as LineWithCustomizedShape,
 } from './LineSeries.stories'
 import { Basic as ComposeBasic } from './ComposeSeries.stories'
+import { Stacked } from './AreaSeries.stories'
 
 interface ContainerProps {
   left?: React.ReactNode
@@ -34,6 +35,9 @@ const Overview = () => (
     <Container left={<ComposeBasic />} right={<WithCustomizedShape />} />
     <Container left={<TwoLevel />} right={<ArcWithCustomizedShape />} />
     <Container left={<LineBasic />} right={<LineWithCustomizedShape />} />
+    <Container>
+      <Stacked />
+    </Container>
     <Container>
       <CircleBasic
         margin={{ top: 60 }}
