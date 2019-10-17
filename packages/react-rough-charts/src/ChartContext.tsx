@@ -8,13 +8,16 @@ export type Margin = {
   left?: number
   right?: number
 }
-export type DataKey = 'xDataKey' | 'yDataKey' | 'barDataKeys' | 'lineDataKeys' | 'circleDataKeys'
+export type DataKey = 'xDataKey' | 'yDataKey' |
+'barDataKeys' | 'lineDataKeys' | 'circleDataKeys' | 'areaDataKeys'
+
 export interface ScaleData<T> {
-  xDataKey?: string
-  yDataKey?: string
-  barDataKeys: string[]
-  lineDataKeys: string[]
-  circleDataKeys: string[]
+  xDataKey?: keyof T
+  yDataKey?: keyof T
+  barDataKeys: (keyof T)[]
+  lineDataKeys: (keyof T)[]
+  circleDataKeys: (keyof T)[]
+  areaDataKeys: (keyof T)[]
   internalXScale: ScaleBand<any> | ScaleLinear<any, any>
   internalYScale: ScaleBand<any> | ScaleLinear<any, any>
   xScale: ScaleBand<any> | ScaleLinear<any, any>

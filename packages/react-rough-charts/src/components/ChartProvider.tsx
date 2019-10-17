@@ -24,6 +24,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = (props) => {
     barDataKeys: [],
     lineDataKeys: [],
     circleDataKeys: [],
+    areaDataKeys: [],
     xScale: props.xScale || internalXScale,
     yScale: props.yScale || internalYScale,
     userXScale: props.xScale,
