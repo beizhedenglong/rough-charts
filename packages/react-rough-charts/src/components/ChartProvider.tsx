@@ -14,6 +14,9 @@ const defaultMargin = {
 export interface ChartProviderProps extends ChartContextArgument {
 }
 
+/**
+ * The `ChartProvider` is a root component for other components.
+ */
 export const ChartProvider: React.FC<ChartProviderProps> = (props) => {
   const [innerHeight, setInnerHeight] = React.useState(0)
   const [innerWidth, setInnerWidth] = React.useState(0)

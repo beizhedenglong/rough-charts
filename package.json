@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@storybook/cli": "^5.2.3",
+    "@types/node": "^12.11.1",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "3.0.2",
     "eslint": "^6.5.1",

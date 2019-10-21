@@ -10,8 +10,8 @@
     "build": "microbundle build --no-compress --jsx react",
     "watch": "microbundle watch --no-compress --jsx react",
     "storybook": "start-storybook -p 6006 --ci",
-    "build-storybook": "build-storybook",
-    "deploy-storybook": "storybook-to-ghpages"
+    "build-storybook": "node stories/generateCodeString.js && build-storybook",
+    "deploy-storybook": "node stories/generateCodeString.js && storybook-to-ghpages"
   },
   "repository": "https://github.com/beizhedenglong/rough-charts",
   "author": "https://github.com/beizhedenglong",
@@ -28,6 +28,7 @@
     "@storybook/addon-links": "^5.2.3",
     "@storybook/addon-storysource": "^5.2.3",
     "@storybook/addons": "^5.2.3",
+    "@storybook/components": "^5.2.4",
     "@storybook/preset-typescript": "^1.1.0",
     "@storybook/react": "^5.2.3",
     "@storybook/source-loader": "^5.2.4",
