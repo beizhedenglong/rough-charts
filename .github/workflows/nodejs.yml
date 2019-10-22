@@ -1,0 +1,30 @@
+name: Node CI
+
+on: 
+  pull_request:
+    branches: 
+      - master
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: yarn install, build, and test
+      run: |
+        yarn 
+        yarn build & yarn build-storybook
+      env:
+        CI: true
+    - name: deploy gh-pages
+      uses: peaceiris/actions-gh-pages@v2.5.0
+      if: github.event_name == 'push'
+      env:
+        PERSONAL_TOKEN: ${{ secrets.GH_TOKEN }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./packages/react-rough-charts/storybook-static
