@@ -1,4 +1,4 @@
-# Rough Charts
+# Rough Charts &middot; [![license](https://img.shields.io/github/license/beizhedenglong/rough-charts)](https://github.com/beizhedenglong/rough-charts/blob/master/LICENSE) ![build status](https://github.com/beizhedenglong/rough-charts/workflows/Node%20CI/badge.svg)
 **A responsive, composable react charting library with a hand-drawn style.**
 [**`See Examples From StoryBooks.`**](https://beizhedenglong.github.io/rough-charts/?path=/docs/roughcharts--page)
 
