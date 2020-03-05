@@ -1,6 +1,6 @@
 {
   "name": "rough-charts",
-  "version": "0.4.1",
+  "version": "0.4.2-alpha.0",
   "source": "src/index.tsx",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
@@ -50,7 +50,7 @@
     "d3-scale": "^3.1.0",
     "d3-shape": "^1.3.5",
     "react-docgen-typescript-loader": "^3.3.0",
-    "react-roughjs": "^0.1.2",
+    "react-roughjs": "^0.1.3-alpha.0",
     "roughjs": "^3.1.0"
   }
 }
