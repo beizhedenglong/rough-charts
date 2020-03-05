@@ -16,9 +16,9 @@ const getDomain = (type: ScaleType, values: number[]) => {
 export function useChartContext<T extends object>(
   props: ChartContextArgument<T>,
   scaleKeyName?: DataKey,
-): ChartContextReturn<T> & {
-    contentHeight: number,
-    contentWidth: number
+):
+  ChartContextReturn<T> & {
+    contentHeight: number, contentWidth: number
   } {
   const value = React.useContext<ChartContextReturn<T>>(ChartContext)
   if (value === null) {
@@ -143,7 +143,7 @@ export function useChartContext<T extends object>(
     ) {
       setScaleData(prev => getSeriesScaleData(prev))
     }
-  }, [scaleKeyName, dataKey, contentHeight, contentWidth])
+  }, [scaleKeyName, dataKey, contentHeight, contentWidth, data])
   const margin = {
     ...value.margin,
   }
