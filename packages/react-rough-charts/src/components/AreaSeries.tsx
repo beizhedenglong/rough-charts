@@ -25,7 +25,7 @@ export const AreaSeries = <T extends object>(props: AreaSeriesProps<T>) => { // 
     xScale, yScale, xDataKey, areaDataKeys,
   } = scaleData
   const {
-    dataKey, curve, children, padding,
+    dataKey, curve, children, padding, overrideData
   } = props
   const { generateHandlers } = useTooltipGenerator(props as any)
 
@@ -52,7 +52,9 @@ export const AreaSeries = <T extends object>(props: AreaSeriesProps<T>) => { // 
     y0: number
     y1: number
   }
-  const positions: Position[] = data.map((item: any) => {
+
+  let chartData = overrideData || data;
+  const positions: Position[] = chartData.map((item: any) => {
     const { y0, y1 } = calculateY(item)
     return {
       x: xScale(item[xDataKey]),
@@ -88,13 +90,13 @@ export const AreaSeries = <T extends object>(props: AreaSeriesProps<T>) => { // 
             stroke: 'white',
           },
         }
-        const item = data[index] as T
-        const handlers = generateHandlers(data[index], {
+        const item = chartData[index] as T
+        const handlers = generateHandlers(chartData[index], {
           name: `${item[xDataKey]} ${dataKey}`,
           value: `${item[dataKey]}`,
         })
         if (isFunction(children)) {
-          return processTooltipHandlers(children(data[index] as T, childProps, index), handlers)
+          return processTooltipHandlers(children(chartData[index] as T, childProps, index), handlers)
         }
         return (
           <Circle

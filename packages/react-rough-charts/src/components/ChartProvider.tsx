@@ -84,8 +84,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = (props) => {
       }}
     >
       <svg
-        height={height}
-        width={width}
+        viewBox={`0 0 ${width} ${height}`}
         ref={ref}
       >
         <RoughProvider

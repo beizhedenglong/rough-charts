@@ -10,6 +10,7 @@ export interface BaseChartProps<T = any> extends ChartContextArgument<T> {
 }
 export interface BaseChartComponentProps<T = any> {
   data?: T[]
+  overrideData? : T[]
   options?: RoughOptions
 }
 
