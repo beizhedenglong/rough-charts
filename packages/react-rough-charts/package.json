@@ -1,6 +1,6 @@
 {
   "name": "rough-charts",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "source": "src/index.tsx",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
