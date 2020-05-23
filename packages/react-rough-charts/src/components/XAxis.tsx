@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Line } from 'react-roughjs'
 import { useChartContext } from '../hooks/useChartContext'
 import { BaseChartComponentProps } from '../baseTypes'
-import { isFunction, getBandWidth } from '../utils'
+import { isFunction, getBandWidth, isNil } from '../utils'
 
 export interface XAxisProps extends BaseChartComponentProps {
   dataKey: string
@@ -11,6 +11,7 @@ export interface XAxisProps extends BaseChartComponentProps {
   fontSize?: number
   format?: (tick: string) => string
   tickCount?: number
+  startFromY?: any
 }
 
 export const XAxis: React.FC<XAxisProps> = (props) => {
@@ -20,17 +21,19 @@ export const XAxis: React.FC<XAxisProps> = (props) => {
   const {
     options, contentHeight, contentWidth, scaleData,
   } = useChartContext(props, 'xDataKey')
-  const { xScale } = scaleData
+  const { xScale, yScale } = scaleData
   const {
-    tickSize, fontSize, format, tickCount,
+    tickSize, fontSize, format, tickCount, startFromY,
   } = props
-  if (!xScale) {
+  if (!xScale || !yScale) {
     return null
   }
 
   const ticks = ('ticks' in xScale) ? xScale.ticks(tickCount) : xScale.domain()
   const bandwidth = getBandWidth(xScale)
-  const y = contentHeight
+
+  const y = isNil(startFromY) ? contentHeight : yScale(startFromY)
+
   return (
     <React.Fragment>
       <Line
