@@ -12,6 +12,7 @@ const defaultMargin = {
 }
 
 export interface ChartProviderProps extends ChartContextArgument {
+  viewBox?: string;
 }
 
 /**
@@ -87,6 +88,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = (props) => {
         height={height}
         width={width}
         ref={ref}
+        viewBox={props.viewBox}
       >
         <RoughProvider
           transform={`translate(${margin.left}, ${margin.top})`}
