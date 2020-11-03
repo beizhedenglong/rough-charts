@@ -21,6 +21,7 @@
 ```
 # NPM
 npm install rough-charts
+
 # Yarn 
 yarn add rough-charts
 ```
