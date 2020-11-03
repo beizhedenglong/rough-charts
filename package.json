@@ -24,6 +24,7 @@
     "eslint-plugin-zero": "^0.0.9",
     "husky": "^3.0.8",
     "lerna": "^3.16.4",
+    "microbundle": "0.12.0-next.8",
     "parcel-bundler": "^1.12.3",
     "typescript": "^3.6.4"
   },

@@ -2,6 +2,7 @@
   "extends": "plugin:zero/ts-react",
   "rules": {
     "react/prop-types": "off",
-    "jsx-a11y/mouse-events-have-key-events": "off"
+    "jsx-a11y/mouse-events-have-key-events": "off",
+    "import/extensions": "off"
   }
 }
