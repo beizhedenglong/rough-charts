@@ -19,7 +19,10 @@
 ## Installation
 
 ```
-  yarn add rough-charts
+# NPM
+npm install rough-charts
+# Yarn 
+yarn add rough-charts
 ```
 > **This project contains a package called [`react-roughjs`](https://github.com/beizhedenglong/rough-charts/tree/master/packages/react-roughjs). It has a lot of basic rough shapes, you may need it.**
 
