@@ -15,10 +15,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 13.9.0
     - name: yarn install, build, and test
       run: |
         yarn 
-        yarn build & yarn build-storybook
+        yarn build && yarn build-storybook
       env:
         CI: true
     - name: deploy gh-pages

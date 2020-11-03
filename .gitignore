@@ -68,3 +68,4 @@ dist
 lerna-debug.log
 .DS_store
 packages/examples
+packages/react-rough-charts/storybook-static
